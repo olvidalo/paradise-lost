@@ -6834,7 +6834,8 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-flow: column wrap;
           flex-flow: column wrap;
-  background-color: grey; }
+  background-color: grey;
+  --md-theme-default-background: transparent; }
 
 .app, .map, .overlay {
   -webkit-box-flex: 1;
@@ -7563,62 +7564,7 @@ h1, h2, h3, h4, h5, h6, .md-title {
 .marker-cluster span {
   line-height: 30px; }
 
-/*
-Author: Mathias Schneider
-License: MIT
-Version: 0.0.6
-*/
-/* Marker setup */
-.vector-marker {
-  width: 35px;
-  height: 46px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  display: block;
-  text-align: center; }
-
-.vector-marker path {
-  stroke: black;
-  stroke-opacity: 0.4;
-  stroke-width: 1; }
-
-.vector-marker.not-accepted {
-  opacity: 0.5; }
-
-.vector-marker-shadow:before {
-  bottom: -13px;
-  -webkit-box-shadow: 35px -10px 10px rgba(0, 0, 0, 0.4);
-          box-shadow: 35px -10px 10px rgba(0, 0, 0, 0.4);
-  content: "";
-  height: 40%;
-  position: absolute;
-  right: 21px;
-  -webkit-transform-origin: 50% 50%;
-  transform-origin: 50% 50%;
-  -webkit-transform: skew(150deg) rotate(-40deg);
-  transform: skew(150deg) rotate(-40deg);
-  width: 60%;
-  z-index: -1; }
-
-.vector-marker i {
-  position: absolute;
-  top: 8px;
-  left: 0;
-  width: 32px;
-  color: #333;
-  margin: auto;
-  display: inline-block;
-  font-size: 14px; }
-
-.vector-marker i.maki-icon {
-  width: 24px;
-  left: 4px;
-  top: 4px; }
-
-.vector-marker .icon-white {
-  color: #fff; }
-
+/*@import 'node_modules/Leaflet.vector-markers/dist/leaflet-vector-markers';*/
 #leaflet {
   width: 100%;
   height: 100%; }
@@ -7658,6 +7604,9 @@ Version: 0.0.6
   transition: opacity 0.7s ease-out, transform 0.7s ease-out;
   transition: opacity 0.7s ease-out, transform 0.7s ease-out, -webkit-transform 0.7s ease-out; }
 
+.vector-marker path {
+  stroke: none; }
+
 .related svg {
   -webkit-transform: scale(1.5);
           transform: scale(1.5); }
@@ -7668,13 +7617,28 @@ Version: 0.0.6
   opacity: 0.55; }
 
 a {
-  cursor: pointer; }
+  cursor: pointer;
+  margin-right: 1rem; }
+
+.md-drawer {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%), url(assets/ricepaper_v3_@2X.png) repeat; }
+
+.body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+
+.md-tabs-content {
+  height: 100%; }
 
 .wrap {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  height: 100%;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -7682,9 +7646,30 @@ a {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%), url(assets/ricepaper_v3_@2X.png) repeat; }
+  height: 100%; }
+
+.content {
+  overflow-y: auto;
+  overflow-x: hidden; }
 
 .passage {
+  margin-bottom: 1em; }
+
+.reference {
+  text-align: right;
+  font-style: italic; }
+
+.morality {
+  border-left: solid 6px;
+  padding-left: 0.5rem; }
+  .morality.positive {
+    border-color: #4169e1; }
+  .morality.negative {
+    border-color: #b22222; }
+  .morality.neutral {
+    border-color: #555555; }
+
+.passage-text {
   white-space: pre; }
 
 .main {
