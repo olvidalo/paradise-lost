@@ -13,10 +13,12 @@ import postcss from 'postcss'
 import replace from 'rollup-plugin-replace'
 import builtins from 'rollup-plugin-node-builtins';
 import commonjs from 'rollup-plugin-commonjs'
+import poststylus from 'poststylus'
 import livereload from 'rollup-plugin-livereload'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import nodeGlobals from 'rollup-plugin-node-globals'
 import autoprefixer from 'autoprefixer'
+import rollupPostcss from 'rollup-plugin-postcss'
 
 if (fs.existsSync('./dist/main.js.map')) fs.unlinkSync('./dist/main.js.map')
 
@@ -33,20 +35,26 @@ let plugins = [
     vue({ autoStyles: false, styleToImports: true }),
     scss({
         output: true,
-        output: 'dist/styles.css',
+        output: 'dist/styles.scss.css',
         processor: css => postcss([autoprefixer/*, cssnano*/]).process(css, { from: undefined, zindex: false }).then(result => result.css)
+    }),
+    rollupPostcss({
+        plugins: [poststylus],
+        extract: 'dist/styles.styl.css',
+        extensions: ['.styl'],
+        use: ['stylus']
     }),
     buble({
         objectAssign: 'Object.assign',
-        exclude: '**/*.json'
+        exclude: ['**/*.json', '**/*.styl']
     }),
     nodeResolve({
         jsnext: true,
         main: true,
         browser: true,
-        exclude: '**/*.json'
+        exclude: ['**/*.json', '**/*.styl']
     }),
-    commonjs({exclude: '**/*.json'}),
+    commonjs({exclude: ['**/*.json', '**/*.styl']}),
     nodeGlobals(),
     copy({ 'src/index.html': 'dist/index.html' }),
     process.env.NODE_ENV === 'prod' && replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),

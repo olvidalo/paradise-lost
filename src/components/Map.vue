@@ -1,6 +1,15 @@
 <template>
-  <div>
-    <div id="leaflet"></div>
+  <div class="map-wrap">
+    <div class="close-btn" v-if="n > 1">
+      <v-tooltip left>
+        <v-btn icon slot="activator" class="close" @click="$store.dispatch('removeMap', n)">
+          X
+        </v-btn>
+        <span>close map {{n}}</span>
+      </v-tooltip>
+    </div>
+    <div ref="map" :id="`leaflet-${n}`">
+    </div>
   </div>
 </template>
 
@@ -9,11 +18,13 @@ import L from 'leaflet'
 import 'leaflet-providers'
 import 'leaflet.markercluster'
 import 'Leaflet.vector-markers'
+import 'Leaflet.sync'
 
 import MapPopup from './MapPopup.vue'
 import Vue from 'Vue'
 
-import dataGenesis from '../data/MappableGenesis_2018.csv' 
+import dataGenesis from '../data/MappableGenesis_2018.csv'
+import dataBible from '../data/bible.csv'
 import placeData from '../data/places.csv'
 
 import * as d3 from 'd3'
@@ -28,19 +39,62 @@ export default {
       good: "#4169e1",
       bad: "#b22222",
       neutral: "#555555",
-      genesis: "green"
+      genesis: "green",
+      bible: "#7e7156"
     }
   }),
+  props: {
+    n: { type: Number, required: true }
+  },
   computed: {
-    baseLayer() { return this.$store.getters.baseLayer },
-    overlayMap() { return this.$store.getters.overlayMap },
-    overlayMapOpacity() { return this.$store.getters.overlayMapOpacity },
-    showGenesis() { return this.$store.getters.showGenesis },
+    baseLayer() { return this.$store.getters.mapConfigs[this.n].baseLayer },
+    overlayMap() { return this.$store.getters.mapConfigs[this.n].overlayMap },
+    overlayMapOpacity() { return this.$store.getters.mapConfigs[this.n].overlayMapOpacity },
+    showGenesis() { return this.$store.getters.mapConfigs[this.n].showGenesis },
+    showBible() { return this.$store.getters.mapConfigs[this.n].showBible },
+    showParadiseLost() { return this.$store.getters.mapConfigs[this.n].showParadiseLost },
+
     selectedPlace() { return this.$store.getters.selectedPlace },
-    markerType() { return this.$store.getters.markerType }
+    markerType() { return this.$store.getters.mapConfigs[this.n].markerType },
+    mapZoom() { return this.$store.getters.mapZoom },
+    mapCenter() { return this.$store.getters.mapCenter },
+    mapViewChanging() { return this.$store.getters.mapViewChanging }
   },
   watch: {
+    mapZoom: {
+      handler(newMapZoomInfo) {
+        if (this.mapViewChanging != null && newMapZoomInfo.source != this.n) {
+          //this.map.setZoom(newMapZoomInfo.zoom)
+        }
+      }
+    },
+    mapCenter: {
+      handler(newMapCenterInfo) {
+        console.log(newMapCenterInfo.source + " " + this.n)
+        if (newMapCenterInfo.source != this.n) {
+         
+          this.map.flyTo(newMapCenterInfo.center)
+
+        }
+      }
+    },
+    mapViewChanging: {
+      handler(newMapN) {
+        if (newMapN == null) {
+          this.map.on('movestart', this.moveStartHandler)
+          this.map.on('moveend', this.moveEndHandler)
+          this.map.on('move', this.moveHandler)
+        } 
+        if (newMapN != this.n) {
+          console.log("off")
+          this.map.off('movestart', this.moveStartHandler)
+          this.map.off('moveend', this.moveEndHandler)
+          this.map.off('move', this.moveHandler)
+        } 
+      }
+    },
     baseLayer: {
+      deep: true,
       immediate: true,
       handler(newBaseLayer) {
         if (!newBaseLayer || !this.map) return
@@ -50,13 +104,15 @@ export default {
     overlayMap: {
       immediate: true,
       handler(newOverlayMap) {
-        if (!newOverlayMap || !this.map) return
+        if (!this.map) return
         this.setOverlayMap(newOverlayMap)
       }
     },
     markerType: {
       handler(newType) {
-        this.addMarkers(newType)
+        this.paradiseLostMarkers && this.map.removeLayer(this.paradiseLostMarkers)
+        this.paradiseLostMarkers = null
+        this.toggleParadiseLostMarkers(this.showParadiseLost)
       }
     },
     overlayMapOpacity: {
@@ -69,8 +125,24 @@ export default {
         this.toggleGenesisMarkers(showGenesis)
       }
     },
+    showBible: {
+      handler(showBible) {
+        this.toggleBibleMarkers(showBible)
+      }
+    },
+    showParadiseLost: {
+      handler(showParadiseLost) {
+        this.toggleParadiseLostMarkers(showParadiseLost)
+      }
+    },
     selectedPlace: {
       handler(place) {
+
+        console.log("selectedPlace")
+        console.log(place)
+
+        if (!this.hasMarkers()) return
+
         if (place) {
           this.resetRelated()
           this.selectPlaceOnMap(place)
@@ -82,8 +154,18 @@ export default {
   },
   created() {
 
+    // this.syncWith(otherMap) {
+    //   this.syncedWith = otherMap
+    //   this.map.sync(otherMap)
+    //   otherMap.sync(this.map)
+    // }
+
+    this.hasMarkers = function () {
+      return this.paradiseLostMarkers || this.genesisMarkers || this.bibleMarkers
+    }
+
     this.resetRelated = function () {
-      this.currentMarkers.eachLayer((marker) => marker._icon.classList.remove("related", "unrelated"))
+      this.paradiseLostMarkers && this.paradiseLostMarkers.eachLayer((marker) => marker._icon.classList.remove("related", "unrelated"))
     }
 
     this.unselectMarker = function () {
@@ -94,20 +176,16 @@ export default {
     }
 
     this.selectPlaceOnMap = function(place) {
-      this.selectedMarker = this.currentMarkers.getLayers().find((layer) =>  layer.options.title === place["Place"])
-      // const markerLatLng = marker.getLatLng()
-      // const [offsetLat, offsetLng] = marker.options.icon.options.popupAnchor
-      // const popupLatLng = [markerLatLng.lat - offsetLat, markerLatLng.lat - offsetLng]
-      // console.log(markerLatLng)
-      // console.log(popupLatLng)
-      // const popup = L.popup().setContent(this.makePopup(place))
-      // marker
-      // //popup.openOn(this.map)
+      console.log("select")
+      console.log(place)
+      if (!this.paradiseLostMarkers) return
+      this.selectedMarker = this.paradiseLostMarkers.getLayers().find((layer) =>  layer.options.title === place["Place"])
+      if (!this.selectedMarker) return
       this.selectedMarker.bindPopup(this.makePopup(place))
       this.selectedMarker.openPopup()
 
       if (place["Related"]) {
-        this.currentMarkers.eachLayer((marker) => {
+        this.paradiseLostMarkers.eachLayer((marker) => {
           if (marker.options.place["Related"] === place["Related"]) {
             marker._icon.classList.add("related")
           } else {
@@ -124,15 +202,14 @@ export default {
 
     this.setOverlayMap = function(overlayMap) {
       this.currentOverlayMap && this.map.removeLayer(this.currentOverlayMap)
-      this.currentOverlayMap = L.tileLayer(overlayMap.url, {
-        maxZoom: 19,
-        //opacity: app.currentOverlayOpacity,
-        className: 'tile-layer'
-      }).addTo(this.map).setOpacity(this.overlayMapOpacity).bringToFront()
+      if (overlayMap) {
+        this.currentOverlayMap = L.tileLayer(overlayMap.url, {
+          maxZoom: 19,
+          className: 'tile-layer'
+        }).addTo(this.map).setOpacity(this.overlayMapOpacity).bringToFront()
 
-      this.map.flyToBounds(overlayMap.bounds)
-
-      //this.map.flyToBounds(this.currentOverlayMap.getBounds())
+        // this.map.flyToBounds(overlayMap.bounds)
+      }
     }
 
     this.getMoralityProportions = function(markers) {
@@ -153,6 +230,7 @@ export default {
 
     this.getIconSize = (length) => 30 + length
 
+    // https://css-tricks.com/creating-vue-js-component-instances-programmatically/
     this.makePopup = (place) => {
       const PopupComp = Vue.extend(MapPopup)
       const popup = new PopupComp({})
@@ -165,178 +243,154 @@ export default {
       return popup.$el
     }
 
-    this.addMarkers = (type) => {
-      this.currentMarkers && this.map.removeLayer(this.currentMarkers)
-      // this.currentMarkers = new L.MarkerClusterGroup({
-      //   zoomToBoundsOnClick: false,
-      //   maxClusterRadius: 35,
-      //   disableClusteringAtZoom: 8,
-      //   iconCreateFunction: (cluster) => {
-      //     const markers = cluster.getAllChildMarkers()
-      //     const proportions = this.getMoralityProportions(markers);
-      //     const radius = this.getIconSize(markers.length)
+    this.toggleParadiseLostMarkers = (show) => {
+      if (show == false && this.paradiseLostMarkers) {
+        this.map.removeLayer(this.paradiseLostMarkers)
+        this.paradiseLostMarkers = null
+      } else if (show == true) {
 
-      //     return L.divIcon({ html: 
-      //       '<div position="relative">' + 
-      //         '<div class="circ" style="position: absolute; opacity:' + proportions["good"] + ';background-color:' + this.moralityColors['good'] + ';width:'+radius+'px;height:'+radius+'px;">' + markers.length + '</div>' +
-      //         '<div class="circ" style="position: absolute; opacity:' + proportions["bad"] + ';background-color:' + this.moralityColors['bad'] + ';width:'+radius+'px;height:'+radius+'px;">' + markers.length + '</div>' +
-      //         '<div class="circ" style="position: absolute; opacity:' + proportions["neutral"] + ';background-color:' + this.moralityColors['neutral'] + ';width:'+radius+'px;height:'+radius+'px;">' + markers.length + '</div>' +
-      //       '</div>'
-      //       , iconSize: L.point(radius, radius) })
-      //   }
-      // })
-
-      this.currentMarkers = L.featureGroup()
+        this.paradiseLostMarkers = L.featureGroup()
 
 
-      const addPlaceMarkers = (data, morality) => {
+        const addPlaceMarkers = (data) => {
 
-        data.forEach(place =>  {
-          const m = {}
-          m[place["Postive"]] = "good"
-          m[place["Negative"]] = "bad"
-          m[place["Neutral"]] = "neutral"
+          data.forEach(place =>  {
+            const m = {}
+            m[place["Postive"]] = "good"
+            m[place["Negative"]] = "bad"
+            m[place["Neutral"]] = "neutral"
 
-          const max = Object.keys(m).reduce((max, key) => {return `${Math.max(max, key)}`}, 0)
-
-
-          const moralityColors = this.moralityColors
-          const scaleForWeight = (size, weight) => size + parseInt(weight) * 3 
-
-          const iconFunctions = {
-            "pie": function() {
-              const good = parseInt(place["Postive"])
-              const bad = parseInt(place["Negative"])
-              const neutral = parseInt(place["Neutral"])
-
-              const weight = good + bad + neutral
+            const max = Object.keys(m).reduce((max, key) => {return `${Math.max(max, key)}`}, 0)
 
 
-              const w = scaleForWeight(27, weight)
-              const h = w
+            const moralityColors = this.moralityColors
+            const scaleForWeight = (size, weight) => size + parseInt(weight) * 3 
 
-              const piedata = [good, bad, neutral]
+            const iconFunctions = {
+              "pie": function() {
+                const good = parseInt(place["Postive"])
+                const bad = parseInt(place["Negative"])
+                const neutral = parseInt(place["Neutral"])
 
-              const color = d3.scaleOrdinal()
-              //.domain(piedata)
-              .range([moralityColors["good"], moralityColors["bad"], moralityColors["neutral"]]);
+                const weight = good + bad + neutral
 
-              const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
-               const svg2 = d3.select(svg)
-                            .attr('width', w)
-                            .attr('height', h)
-                            .append('g')
-                            .attr('transform', `translate(${w / 2},${h / 2} )`)
+                const w = scaleForWeight(27, weight)
+                const h = w
 
-              const theArc = arc()
-                              .innerRadius(w / 2)
-                              .outerRadius(0)
+                const piedata = [good, bad, neutral]
 
-              const thePie = pie()
-                            .value((d) => d)
-                            .sort(null)
+                const color = d3.scaleOrdinal()
+                .range([moralityColors["good"], moralityColors["bad"], moralityColors["neutral"]]);
 
-              const path = svg2.selectAll('path')
-                            .data(thePie(piedata))
-                            .enter()
-                            .append('path')
-                            .attr('d', theArc)
-                            .attr('fill', (d, i) => color(i))
-              // // https://css-tricks.com/creating-vue-js-component-instances-programmatically/
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
-              const iconOptions = {
-                iconSize: [ w, h ],
-                className: 'vector-marker',
-                extraIconClasses: 'pie-marker-icon',
-                extraDivClasses: 'pie-marker',
-                html: `
-                <div style="position: relative;"><div style="position: absolute; width: ${w}px; height: ${h}px; top: 0; left: 0;">${(new window.XMLSerializer()).serializeToString(svg)}</div></div>`
+                 const svg2 = d3.select(svg)
+                              .attr('width', w)
+                              .attr('height', h)
+                              .append('g')
+                              .attr('transform', `translate(${w / 2},${h / 2} )`)
+
+                const theArc = arc()
+                                .innerRadius(w / 2)
+                                .outerRadius(0)
+
+                const thePie = pie()
+                              .value((d) => d)
+                              .sort(null)
+
+                const path = svg2.selectAll('path')
+                              .data(thePie(piedata))
+                              .enter()
+                              .append('path')
+                              .attr('d', theArc)
+                              .attr('fill', (d, i) => color(i))
+
+                const iconOptions = {
+                  iconSize: [ w, h ],
+                  className: 'vector-marker',
+                  extraIconClasses: 'pie-marker-icon',
+                  extraDivClasses: 'pie-marker',
+                  html: `
+                  <div style="position: relative;"><div style="position: absolute; width: ${w}px; height: ${h}px; top: 0; left: 0;">${(new window.XMLSerializer()).serializeToString(svg)}</div></div>`
+                }
+
+                //
+                
+                return L.divIcon(iconOptions)
+              },
+              "pin": function() {
+
+                const good = parseInt(place["Postive"])
+                const bad = parseInt(place["Negative"])
+                const neutral = parseInt(place["Neutral"])
+
+                const weight = good + bad + neutral
+
+
+
+                const w = scaleForWeight(40, weight)
+                const h = w
+
+                const piedata = [good / weight, bad / weight, neutral / weight]
+
+                const iconOptions = {
+                  iconSize: [ w, h ],
+                  iconAnchor: [ 15, 50 ],
+                  popupAnchor: [ 2, -40 ],
+                  shadowAnchor: [ 39, 45 ],
+                  shadowSize: [ w + 4, h + 4 ],
+                  className: 'vector-marker',
+                  prefix: 'fa',
+                  spinClass: 'fa-spin',
+                  extraIconClasses: '',
+                  extraDivClasses: '',
+                  icon: 'home',
+                  markerColor: 'blue',
+                  iconColor: 'white',
+                  viewBox: `0 0 ${w} ${h}`,
+                  html: `
+                  <div style="position: relative;"><svg width="${w}px" height="${h}px" viewbox="0 0 50 50">
+                  <path style="fill: white;}; opacity: 1;" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${moralityColors['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${moralityColors['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${moralityColors['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    
+                  </svg></div>`
+                }
+
+                return L.divIcon(iconOptions)
               }
-
-              //
-              
-              return L.divIcon(iconOptions)
-            },
-            "pin": function() {
-
-              const good = parseInt(place["Postive"])
-              const bad = parseInt(place["Negative"])
-              const neutral = parseInt(place["Neutral"])
-
-              const weight = good + bad + neutral
-
-
-
-              const w = scaleForWeight(40, weight)
-              const h = w
-
-              const piedata = [good / weight, bad / weight, neutral / weight]
-
-              const iconOptions = {
-                iconSize: [ w, h ],
-                iconAnchor: [ 15, 50 ],
-                popupAnchor: [ 2, -40 ],
-                shadowAnchor: [ 39, 45 ],
-                shadowSize: [ w + 4, h + 4 ],
-                className: 'vector-marker',
-                prefix: 'fa',
-                spinClass: 'fa-spin',
-                extraIconClasses: '',
-                extraDivClasses: '',
-                icon: 'home',
-                markerColor: 'blue',
-                iconColor: 'white',
-                viewBox: `0 0 ${w} ${h}`,
-                html: `
-                <div style="position: relative;"><svg width="${w}px" height="${h}px" viewbox="0 0 50 50">
-                <path style="fill: white;}; opacity: 1;" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                  <path style="fill: ${moralityColors['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                  <path style="fill: ${moralityColors['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                  <path style="fill: ${moralityColors['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                  
-                </svg></div>`
-              }
-
-              return L.divIcon(iconOptions)
             }
-          }
 
 
-        
+          
 
-          L.marker([place["Latitude"], place["Longitude"]], {
-            icon: iconFunctions[this.markerType](),
-            opacity: 0.9,
-            //fillOpacity: 0.8,
-            fillColor: this.moralityColors[morality],
-            color: this.moralityColors[morality],
-            weight: parseInt(place["Weight"]),
-            morality: morality,
-            title: place["Place"],
-            place: place
-          })
-          .bindTooltip(place["Place"])
-          //.on('popupopen', () => this.$store.commit('setSelectedPlace', {place: place, router: this.$router}))
-          .on('click', () => this.$router.push({hash: place["Place"]}))
-          .on('mouseover', (e) => e.target.setZIndexOffset(1000) )
-          .on('mouseout', (e) => e.target.setZIndexOffset(0) )
-          //.on('popupclose', () => this.$store.dispatch('unselectPlace', this.$router))
-          //.on('popupclose', () => this.$router.push({hash: ""}))
-          .addTo(this.currentMarkers)
-          })
+            L.marker([place["Latitude"], place["Longitude"]], {
+              icon: iconFunctions[this.markerType](),
+              opacity: 0.9,
+              weight: parseInt(place["Weight"]),
+              title: place["Place"],
+              place: place
+            })
+            .bindTooltip(place["Place"])
+            //.on('popupopen', () => this.$store.commit('setSelectedPlace', {place: place, router: this.$router}))
+            .on('click', () => this.$router.push({hash: place["Place"]}))
+            .on('mouseover', (e) => e.target.setZIndexOffset(1000) )
+            .on('mouseout', (e) => e.target.setZIndexOffset(0) )
+            //.on('popupclose', () => this.$store.dispatch('unselectPlace', this.$router))
+            //.on('popupclose', () => this.$router.push({hash: ""}))
+            .addTo(this.paradiseLostMarkers)
+            })
+        }
+
+
+        addPlaceMarkers(placeData)
+
+
+        this.map
+          .addLayer(this.paradiseLostMarkers)
       }
-
-      // addPlaceMarkers(dataPositive, "good")
-      // addPlaceMarkers(dataNegative, "bad")
-      // addPlaceMarkers(dataNeutral, "neutral")
-
-      addPlaceMarkers(placeData, "good")
-
-
-      this.map
-        .addLayer(this.currentMarkers)
-        //.setMaxBounds(this.currentMarkers.getBounds())
     }
 
     this.toggleGenesisMarkers = (show) => {
@@ -344,20 +398,9 @@ export default {
         this.map.removeLayer(this.genesisMarkers)
         this.genesisMarkers = null
       } else if (show == true) {
-        this.genesisMarkers = new L.MarkerClusterGroup({
-          zoomToBoundsOnClick: false,
-          maxClusterRadius: 35,
-          disableClusteringAtZoom: 8,
-          //showCoverageOnHover: false,
-          iconCreateFunction: (cluster) => {
-            const markers = cluster.getAllChildMarkers()
+        
 
-            //var radius = Math.min(width, height) / 2;
-            var radius = this.getIconSize(markers.length)
-
-            return L.divIcon({html: '<div class="circ" style="opacity: 0.75; background-color:' + this.moralityColors['genesis'] + ';width:'+radius+'px;height:'+radius+'px;">' + markers.length + '</div>', iconSize: L.point(radius,radius) })
-          }
-        })
+        this.genesisMarkers = L.featureGroup()
 
         dataGenesis.forEach((place) => {
           const icon = L.VectorMarkers.icon({
@@ -370,30 +413,94 @@ export default {
             opacity: 0.85,
             morality: "genesis",
             weight: 1,
-            icon: icon
+            icon: icon,
+            place: place
           })
           .bindTooltip(place["Place"])
-          .bindPopup((marker) => this.makePopup(marker, place) )
-          .on('click', () => this.$store.commit('setSelectedPlace', place))
+          //.bindPopup((marker) => this.makePopup(marker, place) )
+          //.on('click', () => this.$store.commit('setSelectedPlace', place))
           .addTo(this.genesisMarkers)
         })
 
         this.genesisMarkers.addTo(this.map)
       }
     }
+
+    this.toggleBibleMarkers = (show) => {
+      if (show == false && this.bibleMarkers) {
+        this.map.removeLayer(this.bibleMarkers)
+        this.bibleMarkers = null
+      } else if (show == true) {
+        
+
+        this.bibleMarkers = L.featureGroup()
+
+        dataBible.forEach((place) => {
+          const icon = L.VectorMarkers.icon({
+            markerColor: this.moralityColors['bible']
+          })
+
+
+          L.marker([place["Latitude"], place["Longitude"]], {
+            title: place["Place"],
+            opacity: 0.85,
+            morality: "bible",
+            weight: 1,
+            icon: icon,
+            place: place
+          })
+          .bindTooltip(place["Place"])
+         // .bindPopup((marker) => this.makePopup(marker, place) )
+          //.on('click', () => this.$store.commit('setSelectedPlace', place))
+          .addTo(this.bibleMarkers)
+        })
+
+        this.bibleMarkers.addTo(this.map)
+      }
+    }
+
+    this.moveStartHandler = (event) => {console.log("movestart: " + this.n); this.$store.commit('mapViewChanging', this.n); }
+    this.moveEndHandler = () => {console.log("moveend: " + this.n); this.$store.commit('mapViewChanging', null) }
+    this.moveHandler = (event) => {
+        if (this.mapViewChanging == this.n) {
+          this.$store.dispatch('setMapView', {
+                  center: event.target.getCenter(),
+                  zoom: event.target.getZoom(),
+                  source: this.n
+                })
+        }
+      }
   },
   mounted() {
-    this.map = L.map('leaflet', {zoomControl: false, maxZoom: 18}).setView([32.738, 36.560], 4)
+    console.log(`crreateing leaflet-${this.n}`)
+    this.map = L.map(`leaflet-${this.n}`, {zoomControl: false, maxZoom: 18})
       .on('click', () => this.$router.push({hash: ""}))
+      .on('load', (event) => this.$emit('map-init', event.target))
+      .setView([32.738, 36.560], 4)
+       // .on('movestart', this.moveStartHandler)
+      // .on('moveend', this.moveEndHandler)
+      // .on('move', this.moveHandler)
+
     L.control.zoom({position: 'bottomleft'}).addTo(this.map)
     this.setBaseLayer(this.baseLayer.id)
-    this.setOverlayMap(this.overlayMap)
-    this.addMarkers(this.markerType)
+    this.overlayMap && this.setOverlayMap(this.overlayMap)
     this.toggleGenesisMarkers(this.showGenesis)
+    this.toggleBibleMarkers(this.showBible)
+    this.toggleParadiseLostMarkers(this.showParadiseLost)
 
-    if (this.selectedPlace) {
+    console.log(this.hasMarkers())
+
+    if (this.selectedPlace && this.hasMarkers()) {
       this.selectPlaceOnMap(this.selectedPlace)
     }
+
+  },
+  beforeDestroy() {
+    console.log(`destryoing leaflet-${this.n}`)
+    this.$emit("map-destroy", this.map)
+  },
+  destroy() {
+    this.map.remove()
   }
 };
 </script>
@@ -403,12 +510,36 @@ export default {
   @import 'node_modules/leaflet/dist/leaflet';
   @import 'node_modules/leaflet.markercluster/dist/MarkerCluster';
   @import 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default';
-  /*@import 'node_modules/Leaflet.vector-markers/dist/leaflet-vector-markers';*/
 
 
-  #leaflet {
+  .map-wrap {
+    position: relative;
+  }
+
+  .close-btn {
+    position: absolute;
+
+    right: 16px;
+    top: 16px;
+
+    z-index: 10000;
+  }
+
+  [id^=leaflet] {
      width: 100%;
     height: 100%;
+
+    
+  }
+
+  [id^=overlay] {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+
+    background-color: green;
+    opacity: 0.3;
+    z-index: 10000;
   }
 
   .leaflet-popup-content-wrapper {

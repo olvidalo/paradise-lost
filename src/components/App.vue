@@ -1,57 +1,44 @@
 <template>
 
-  <div class="app">
-    <Map class="map"></Map>
-    <div class="overlay">
-      <md-card class="menu-button">
-        <md-button class="md-icon-button" @click="mainPaneOpen = true">
-                <md-icon md-src="assets/ic_menu_black_48px.svg" />
-        </md-button>
-      </md-card>
-      <md-drawer md-permanent="card" class="controls" :md-active.sync="mainPaneOpen">
-        <MainPane />
-       <!--  <md-card-actions>
-          <md-button @click="showAbout = true">About the Project</md-button>
-        </md-card-actions> -->
-      </md-drawer>
-      <md-drawer class="md-right" :md-active.sync="passagePaneOpen">
-        <PassagePane />
-      </md-drawer>
-      <!-- <PassagePane class="passage-pane" v-if="$store.getters.passagePaneOpen && $store.getters.selectedPlace" /> -->
-    </div>
-
-    <md-dialog :md-active.sync="showAbout">
-        <md-dialog-title>Preferences</md-dialog-title>
-
-        <md-tabs md-dynamic-height>
-          <md-tab md-label="General">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-          </md-tab>
-
-          <md-tab md-label="Activity">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-          </md-tab>
-
-          <md-tab md-label="Account">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam mollitia dolorum dolores quae commodi impedit possimus qui, atque at voluptates cupiditate. Neque quae culpa suscipit praesentium inventore ducimus ipsa aut.</p>
-          </md-tab>
-        </md-tabs>
-
-        <md-dialog-actions>
-          <md-button class="md-primary" @click="showAbout = false">Close</md-button>
-          <md-button class="md-primary" @click="showAbout = false">Save</md-button>
-        </md-dialog-actions>
-      </md-dialog>
-
+  <div>
+    <MapContainer id="mapContainer"/>
+    <!-- <div id="mapContainer">
+      <Map ref="map1" class="map" :n="1"></Map>
+      <Map ref="map2" class="map" :n="2"></Map>
+    </div> -->
+    <v-app id="app" class="overlay">
+     
+    
+          <v-content>
+            <v-container id="mainContainer" fluid fill-height>
+              <v-card id="menu-container">
+                <v-navigation-drawer floating permanent class="elevation-1">
+                  <MainPane />
+                </v-navigation-drawer>
+              </v-card>
+             <v-layout justify-end align-end>
+              <v-flex shrink class="controls">
+               <v-card id="legend-pane" style="" flat class="transparent">
+                <v-layout justify-space-between>
+                  <span>good</span>
+                  <span>neutral</span>
+                  <span>bad</span>
+                </v-layout>
+                <div id="legend">
+                </div>
+               </v-card>
+              </v-flex>
+             </v-layout>
+            </v-container>
+          </v-content> 
+          <v-navigation-drawer v-model="drawer" app absolute :right="true" v-model="passagePaneOpen" width="400" :disable-resize-watcher="true" :hide-overlay="true" stateless>
+           <PassagePane/>
+         </v-navigation-drawer>
+    
+   
+    
+    </v-app>
   </div>
-
 </template>
 
 <script>
@@ -59,6 +46,7 @@
 import Map from './Map.vue'
 import PassagePane from './PassagePane.vue'
 import MainPane from './MainPane.vue'
+import MapContainer from './MapContainer.vue'
 
 export default {
   name: "app",
@@ -67,7 +55,7 @@ export default {
     showAbout: false
   }),
   components: {
-    Map, PassagePane, MainPane
+    Map, PassagePane, MainPane, MapContainer
   },
   computed: {
     passagePaneOpen: {
@@ -85,7 +73,8 @@ export default {
         this.$store.commit('setPassagePaneOpen', false)
       }
     }
-  }
+  },
+ 
   // created() {
   //   this.$store.dispatch('loadMapConfig')
   // },
@@ -96,11 +85,144 @@ export default {
 
 @import url(https://fonts.googleapis.com/css?family=Playfair%20Display:bold,black);
 @import url(https://fonts.googleapis.com/css?family=Lato:bold,black,regular);
-@import 'node_modules/vue-material/src/components/MDLayout/mixins';
+/*@import 'node_modules/vue-material/src/components/MDLayout/mixins';
+*/
 
-html, body, .app { height: 100%; margin: 0;}
+.app {
+  position: relative;
+  text-shadow:0 0 1px transparent;
+  text-rendering: optimizeLegibility;
+}
 
-body {
+h1, h2, h3, h4, h5, h6, .headline {
+  color: #993333;
+  font-family: "Playfair Display";
+}
+
+/*.md-title {
+  font-size: 1.8em;
+  font-weight: bold;
+}*/
+
+#mapContainer, .overlay {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+}
+
+#app {
+  background: transparent;
+}
+
+#mainContainer {
+  padding: 24px;
+}
+
+.overlay {
+  z-index: 2;
+  pointer-events: none;
+
+  #controls {
+    z-index: 4;
+  }
+
+  .controls > * {
+    pointer-events: auto;
+  }
+}
+
+#mapContainer {
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  z-index: 1;
+  height: 100%;
+  flex-wrap: wrap;
+
+}
+
+
+.content {
+  z-index: 1;
+}
+
+#menu-container {
+  align-self: flex-start;
+  width: 247px;
+}
+
+.navigation-drawer {
+  padding-bottom: 0;
+}
+
+#legend-pane {
+  padding: 8px;
+  opacity: 0.85;
+
+  background: rgba(0,0,0,0);
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/*#legend-pane::after {
+  content: "";
+  background: url(assets/ricepaper_v3_@2X.png) repeat;
+  opacity: 0.98;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;   
+}*/
+
+#legend {
+
+  width: 185px;
+  height: 20px;
+
+
+
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4169e1+0,496fe1+33,767676+48,767676+52,bb2525+66,b22222+100 */
+  background: rgb(65,105,225); /* Old browsers */
+  background: -moz-linear-gradient(left, rgba(65,105,225,1) 0%, rgba(73,111,225,1) 33%, rgba(118,118,118,1) 48%, rgba(118,118,118,1) 52%, rgba(187,37,37,1) 66%, rgba(178,34,34,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+/*html, body, .app { height: 100%; margin: 0;}*/
+
+/*body {
+  display: flex;
+  flex-flow: column wrap;
+  background-color: grey;
+
+}
+
+.map {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  z-index: 1;
+  height: 100%;
+}
+
+.overlay {
+  z-index: 2;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+
+
+  > * {
+    pointer-events: auto;
+  }
+
+  background-color: transparent;
+}
+*/
+/*body {
   display: flex;
   flex-flow: column wrap;
   background-color: grey;
@@ -114,23 +236,6 @@ body {
   overflow: hidden;
 }
 
-.app {
-  position: relative;
-  font-family: "Lato", "Roboto", sans-serif;
-  text-shadow:0 0 1px transparent;
-  text-rendering: optimizeLegibility;
-}
-
-h1, h2, h3, h4, h5, h6, .md-title {
-  color: #993333;
-  font-family: "Playfair Display";
-}
-
-.md-title {
-  font-size: 1.8em;
-  font-weight: bold;
-}
-
 .map {
   z-index: 1;
 }
@@ -142,7 +247,6 @@ h1, h2, h3, h4, h5, h6, .md-title {
   pointer-events: none;
 
   align-items: flex-start;
-  /*justify-content: space-between;*/
 
   > * {
     pointer-events: auto;
@@ -162,7 +266,6 @@ h1, h2, h3, h4, h5, h6, .md-title {
 }
 
 .controls {
-  /*margin: 1rem;*/
   width: auto;
 
   h1, h2 {
@@ -173,5 +276,5 @@ h1, h2, h3, h4, h5, h6, .md-title {
 .passage-pane {
   margin: 1rem;
   width: 33vw;
-}
+}*/
 </style>

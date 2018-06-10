@@ -1,62 +1,115 @@
 <template>
-	<md-card-content class="main">
-	  <div class="title">
-	    <div class="line-1">Moralized Geography</div>
-	    <div class="line-2">
-	      <div class="heading-line"/>
-	      <div class="heading-of">of</div>
-	      <div class="heading-line"/>
-	    </div>
-	    <div class="line-3">Paradise Lost</div>
-	  </div>
-	  <md-divider></md-divider>
 
-	  
-	  
-	  		<md-list class="transparent md-dense">
-	  		  <md-list-item class="inset" md-expand :md-expanded.sync="expandBaseMaps">
-	  		    <span class="md-list-item-text">Base Maps</span>
-	  		    <md-list slot="md-expand" class="md-dense transparent">
-	  		      <md-list-item class="inset selectable" v-bind:class="{ selected: $store.getters.baseLayer.id == baseLayer.id }" v-for="(baseLayer, index) in mapConfig.baseLayers" @click="$store.commit('setBaseLayer', baseLayer)">
-	  		      	<span>{{ baseLayer.name }}</span>
-	  						<md-icon>✓</md-icon>
-	  		      </md-list-item>
-	  		    </md-list>
-	  		  </md-list-item>
-	  		  <md-list-item class="inset" md-expand :md-expanded.sync="expandOverlayMaps">
-	  		    <span class="md-list-item-text">Rectified Maps</span>
-	  		    <md-list slot="md-expand" class="md-dense transparent">
-	  		      <md-list-item class="inset selectable" v-bind:class="{ selected: $store.getters.overlayMap.id == overlayMap.id }" v-for="overlayMap in mapConfig.overlayMaps" @click="$store.commit('setOverlayMap', overlayMap)">
-	  		      	<span>{{ overlayMap.name }}</span>
-	  		      	<md-icon>✓</md-icon>
-	  		      </md-list-item>
-	  		      <md-list-item>
-	  		        <input type="range" v-model="overlayMapOpacity" min="0" max="1" step="0.01"> {{ Math.round(overlayMapOpacity * 100) }}%
-	  		      </md-list-item>
-	  		    </md-list>
-	  		  </md-list-item>
-	  		  <md-list-item class="genesis inset">
-	  		  	<span>Genesis</span>
-	  		  	<md-switch v-model="showGenesis" />
-	  		  </md-list-item>
-	  		  <md-list-item class="inset"  md-expand :md-expanded.sync="expandMarkerOptions">
-	  					<span class="md-list-item-text">Marker Types</span>
-	  					<md-list slot="md-expand" class="md-dense transparent">
-	  						<md-list-item>
-	  							<md-radio v-model="markerType" value="pie">Pie Charts</md-radio>
-	  						</md-list-item>
-	  						<md-list-item>
-	  							<md-radio v-model="markerType" value="pin">Pins</md-radio>
-	  						</md-list-item>
-	  					</md-list>
-	  		  </md-list-item>
-	  		</md-list>
-	</md-card-content>
+	<div class="wrap">
+		<div class="title">
+		  <div class="line-1">Moralized Geography</div>
+		  <div class="line-2">
+		    <div class="heading-line"/>
+		    <div class="heading-of">of</div>
+		    <div class="heading-line"/>
+		  </div>
+		  <div class="line-3">Paradise Lost</div>
+		</div>
+
+		<!-- <v-divider></v-divider> -->
+
+		<div class="menu-controls">
+			<v-btn-toggle v-model="selectedMap" mandatory class="map-toggles">
+				<v-btn v-for="(map, index) in activeMaps" @click="selectMap($event, map)" flat :value="map" class="map-toggle">{{index + 1}}</v-btn>
+			</v-btn-toggle>
+			<v-btn class="map-toggle add" v-on:click="addMap()" v-if="activeMaps.length < 4">+</v-btn>
+		</div>
+			<div class="menu-list">
+				<v-list  dense id="menu" :key="map" >
+				  <v-list-group no-action>
+				  	<v-list-tile slot="activator">
+				  	  <v-list-tile-content><v-list-tile-title>Base Maps</v-list-tile-title></v-list-tile-content>
+				  	</v-list-tile>
+				  	<v-list-tile avatar ripple v-bind:class="{ selected: $store.getters.baseLayer.id == baseLayer.id }" v-for="(baseLayer, index) in mapConfig.baseLayers" @click="$store.commit('setBaseLayer', baseLayer)">
+				  	  <v-list-tile-content><v-list-tile-title>{{ baseLayer.name }}</v-list-tile-title></v-list-tile-content>
+				  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+				  	</v-list-tile>
+				  </v-list-group>
+				  <v-list-group no-action>
+				  	<v-list-tile slot="activator">
+				  	  <v-list-tile-content><v-list-tile-title>Rectified Maps</v-list-tile-title></v-list-tile-content>
+				  	</v-list-tile>
+
+				  	<v-list-tile avatar ripple v-bind:class="{ selected: overlayMap && map.id == overlayMap.id }" v-for="map in mapConfig.overlayMaps"  @click="$store.commit('setOverlayMap', map)">
+				  	  <v-list-tile-content><v-list-tile-title>{{ map.name }}</v-list-tile-title></v-list-tile-content>
+				  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+				  	</v-list-tile>
+
+				  	<v-list-tile avatar ripple v-bind:class="{ selected: !overlayMap }"  @click="$store.commit('setOverlayMap', null)">
+				  	  <v-list-tile-content><v-list-tile-title>None</v-list-tile-title></v-list-tile-content>
+				  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+				  	</v-list-tile>
+
+				  	<v-list-tile>
+				  		<v-slider v-model="overlayMapOpacity" min="0" max="1" step="0.01"> {{ Math.round(overlayMapOpacity * 100) }}%
+				  	</v-list-tile>
+				  </v-list-group>
+
+				  <v-list-group>
+				    <v-list-tile slot="activator">
+				      <v-list-tile-content><v-list-tile-title>Markers</v-list-tile-title></v-list-tile-content>
+				    </v-list-tile>
+
+				    <v-list-tile>
+				    	<v-list-tile-content>
+				    	  <v-list-tile-title>Paradise Lost</v-list-tile-title>
+				    	</v-list-tile-content>
+				    	<v-list-tile-action><v-switch v-model="showParadiseLost"></v-switch></v-list-tile-action>
+				    </v-list-tile>
+				    <v-list-tile>
+				    	<v-list-tile-content>
+				    	  <v-list-tile-title>Genesis</v-list-tile-title>
+				    	</v-list-tile-content>
+				    	<v-list-tile-action><v-switch v-model="showGenesis"></v-switch></v-list-tile-action>
+				    </v-list-tile>
+				    <v-list-tile>
+				    	<v-list-tile-content>
+				    	  <v-list-tile-title>OpenBible</v-list-tile-title>
+				    	</v-list-tile-content>
+				    	<v-list-tile-action><v-switch v-model="showBible"></v-switch></v-list-tile-action>
+				    </v-list-tile>
+
+				  </v-list-group>
+
+				  <v-list-group>
+				  	<v-list-tile slot="activator">
+				  	  <v-list-tile-content><v-list-tile-title>Marker Types</v-list-tile-title></v-list-tile-content>
+				  	</v-list-tile>
+
+					<v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'pie' }" @click="markerType = 'pie'">
+				  	  <v-list-tile-content><v-list-tile-title>Pie Charts</v-list-tile-title></v-list-tile-content>
+				  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+				  	</v-list-tile>
+
+						<v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'pin' }" @click="markerType = 'pin'">
+					  	  <v-list-tile-content><v-list-tile-title>Pins</v-list-tile-title></v-list-tile-content>
+					  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+					  	</v-list-tile>
+				  </v-list-group>
+							
+
+				</v-list>
+		</div>
+	<!-- 	<v-layout id="main-collapse" align-center justify-space-between>
+			<v-btn flat>About this project</v-btn>
+			<v-btn flat>
+			  <v-icon>keyboard_arrow_up</v-icon>
+			</v-btn>
+		</v-layout> -->
+			
+
+	</div>
 </template>
 
 <script>
 
 import mapConfig from '../data/map-config.json'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
 	name: "MainPane",
@@ -76,9 +129,36 @@ export default {
 		  get() { return this.$store.getters.showGenesis },
 		  set(value) { this.$store.commit('setShowGenesis', value) }
 		},
+		showBible: {
+		  get() { return this.$store.getters.showBible },
+		  set(value) { this.$store.commit('setShowBible', value) }
+		},
+		showParadiseLost: {
+		  get() { return this.$store.getters.showParadiseLost },
+		  set(value) { this.$store.commit('setShowParadiseLost', value) }
+		},
 		markerType: {
 			get() { return this.$store.getters.markerType },
 			set(value) { this.$store.commit('setMarkerType', value) }
+		},
+		selectedMap: {
+			get() { return this.$store.state.selectedMap },
+			set(value)  {}
+		},
+		...mapGetters([
+			'maps', 'activeMaps', 'overlayMap'
+		]),
+		...mapMutations([
+			'setSelectedMap'
+		])
+	},
+	methods: {
+		...mapActions([
+			'addMap', 'removeMap'
+		]),
+		selectMap(event, map) { 
+			console.log(event.target.value)
+			this.$store.commit('setSelectedMap', map)
 		}
 	}
 }
@@ -86,41 +166,23 @@ export default {
 
 <style lang='scss' scoped>
 
-.main {
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.wrap {
 	background: url(assets/paper_fibers_@2X.png) repeat;
-	height: 100%;
-}
-
-.md-list.transparent {
-	background-color: rgba(0, 0, 0, 0);
-}
-
-.md-list-item.genesis {
-	align-items: space-between;
-}
-
-.inset .md-list-item-content {
-	padding-left: 2em;
-}
-
-.md-list-item-expand {
-	border-top: 0;
-}
-
-.selectable {
-	align-items: space-between;
-
-	&.selected .md-list-item-container {
-		font-weight: bold;
-	}
-
-	.md-icon {
-		display: none;
-	}
-
-	&.selected .md-icon {
-		display: inline-flex;
-	}
+	padding: 16px;
 }
 
 .title {
@@ -136,6 +198,7 @@ export default {
 
   padding-bottom: 1rem;
 
+  width: 210px;
 
   .line-1 {
     font-size: 16px;
@@ -166,4 +229,79 @@ export default {
   }
 
 }
+
+[class^="list__group__items"] .list__tile {
+	padding-left: 24px !important;
+}
+
+#menu a {
+	color: black;
+	text-decoration: none;
+}
+
+.selected .list__tile {
+	font-weight: bold;
+}
+
+.check {
+	display: none;
+}
+
+.selected .check {
+	display: inline-flex;
+}
+
+.tabs__bar {
+	width: 80%;
+}
+
+.menu-controls {
+	position: relative;
+
+	display: flex;
+	align-items: center;
+}
+
+.menu-list {
+	border: 1px solid lightgray;
+	margin-top: -14px;
+	padding-top: 16px
+}
+
+.map-toggles {
+	margin-left: 1rem;
+
+	.btn--active {
+		font-weight: bold;
+	}
+}
+
+.map-toggle {
+	width: 25px;
+	height: 25px;
+
+	min-width: 25px !important;
+
+	&.add {
+		margin-left: 0;
+	}
+}
+
+
+#main-collapse {
+	margin: 0 0 -16px 0;
+	width: 100%;
+	padding: 0;
+
+	button {
+		min-width: inherit;
+		text-transform: none;
+		margin: 0;
+	}
+
+	.btn__content {
+		padding: 0;
+	}
+}
+
 </style>
