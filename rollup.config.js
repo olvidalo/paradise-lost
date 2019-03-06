@@ -33,7 +33,7 @@ let plugins = [
     dsv({
         exclude: 'node_modules/**'
     }),
-    vue({ autoStyles: false, styleToImports: true }),
+    vue({ autoStyles: true, styleToImports: true, css: false }),
     scss({
         output: true,
         output: 'dist/styles.scss.css',
@@ -75,7 +75,8 @@ let config = {
         format: 'iife',
         sourcemap: true //process.env.NODE_ENV !== 'prod'
     },
-    plugins: plugins
+    plugins: plugins,
+    treeshake: false
 }
 
 export default config

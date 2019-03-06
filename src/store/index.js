@@ -44,7 +44,9 @@ export default new Vuex.Store({
             4: {...defaultMapConfig}
         },
         maps: [1, 2, 3, 4],
-        selectedMap: 1
+        selectedMap: 1,
+
+        colorSchemeIndex: 0
     },
     getters: {
         baseLayer: state => state.mapConfigs[state.selectedMap].baseLayer,
@@ -74,7 +76,10 @@ export default new Vuex.Store({
         selectedMapConfig: state => state.mapConfigs[state.selectedMap],
 
         mapConfigs: state => state.mapConfigs,
-        activeMaps: state => state.maps.filter(n => state.mapConfigs[n].active)
+        activeMaps: state => state.maps.filter(n => state.mapConfigs[n].active),
+
+        colorScheme: state => mapConfig.colorSchemes[state.colorSchemeIndex],
+        colorSchemeIndex: state => state.colorSchemeIndex
     },
     mutations: {
     	setBaseLayer: (state, layerID) => state.mapConfigs[state.selectedMap].baseLayer = layerID,
@@ -102,7 +107,9 @@ export default new Vuex.Store({
         removeMap: (state, n) => state.mapConfigs[n].active = false, //state.maps.splice(state.maps.indexOf(n), 1),
 
         setMapConfig: (state, {n, config}) => state.mapConfigs[n] = config,
-        removeMapConfig: (state, n) => delete state.mapConfig[n]
+        removeMapConfig: (state, n) => delete state.mapConfig[n],
+
+        setColorSchemeIndex: (state, colorSchemeIndex) => state.colorSchemeIndex = colorSchemeIndex
 
     },
     actions: {

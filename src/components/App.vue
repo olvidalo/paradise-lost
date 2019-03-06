@@ -81,6 +81,10 @@ export default {
 
 @import url(https://fonts.googleapis.com/css?family=Playfair%20Display:bold,black);
 @import url(https://fonts.googleapis.com/css?family=Lato:bold,black,regular);
+@import 'node_modules/leaflet/dist/leaflet';
+@import 'node_modules/leaflet.markercluster/dist/MarkerCluster';
+@import 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default';
+
 /*@import 'node_modules/vue-material/src/components/MDLayout/mixins';
 */
 
