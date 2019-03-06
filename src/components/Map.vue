@@ -185,6 +185,7 @@ export default {
       this.selectedMarker.openPopup()
 
       if (place["Related"]) {
+          console.log(place["Related"])
         this.paradiseLostMarkers.eachLayer((marker) => {
           if (marker.options.place["Related"] === place["Related"]) {
             marker._icon.classList.add("related")
@@ -472,27 +473,29 @@ export default {
       }
   },
   mounted() {
-    console.log(`crreateing leaflet-${this.n}`)
-    this.map = L.map(`leaflet-${this.n}`, {zoomControl: false, maxZoom: 18})
-      .on('click', () => this.$router.push({hash: ""}))
-      .on('load', (event) => this.$emit('map-init', event.target))
-      .setView([32.738, 36.560], 4)
-       // .on('movestart', this.moveStartHandler)
-      // .on('moveend', this.moveEndHandler)
-      // .on('move', this.moveHandler)
+    setTimeout(() => {
+        console.log(`crreateing leaflet-${this.n}`)
+        this.map = L.map(`leaflet-${this.n}`, {zoomControl: false, maxZoom: 18})
+            .on('click', () => this.$router.push({hash: ""}))
+            .on('load', (event) => this.$emit('map-init', event.target))
+            .setView([32.738, 36.560], 4)
+        // .on('movestart', this.moveStartHandler)
+        // .on('moveend', this.moveEndHandler)
+        // .on('move', this.moveHandler)
 
-    L.control.zoom({position: 'bottomleft'}).addTo(this.map)
-    this.setBaseLayer(this.baseLayer.id)
-    this.overlayMap && this.setOverlayMap(this.overlayMap)
-    this.toggleGenesisMarkers(this.showGenesis)
-    this.toggleBibleMarkers(this.showBible)
-    this.toggleParadiseLostMarkers(this.showParadiseLost)
+        L.control.zoom({position: 'bottomleft'}).addTo(this.map)
+        this.setBaseLayer(this.baseLayer.id)
+        this.overlayMap && this.setOverlayMap(this.overlayMap)
+        this.toggleGenesisMarkers(this.showGenesis)
+        this.toggleBibleMarkers(this.showBible)
+        this.toggleParadiseLostMarkers(this.showParadiseLost)
 
-    console.log(this.hasMarkers())
+        console.log(this.hasMarkers())
 
-    if (this.selectedPlace && this.hasMarkers()) {
-      this.selectPlaceOnMap(this.selectedPlace)
-    }
+        if (this.selectedPlace && this.hasMarkers()) {
+            this.selectPlaceOnMap(this.selectedPlace)
+        }
+    })
 
   },
   beforeDestroy() {

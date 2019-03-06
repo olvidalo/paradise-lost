@@ -27,7 +27,6 @@
 					  	    			</div>
 					  	    			<div class="reference">({{ passage.pos }})</div>
 					  	    		  </div>	
-					  	    		</div>
 					  	    	</v-card-text>
 					  	    </v-card>
 					  	  </v-tab-item>
@@ -52,6 +51,7 @@
 				<div>
 					<div class="footer transparent">
 						<v-btn flat @click="$store.commit('setPassagePaneOpen', false)">Close</v-btn>
+					</div>
 				</div>
 			</v-layout>
 	</v-container>
@@ -67,8 +67,8 @@ export default {
 	computed: {
 		selectedPlace() { return this.$store.getters.selectedPlace },
 		activeTab: {
-			get() { return this.$store.getters.activeDetailTab === "tab-passages" ? "0" : "1"},
-			set(value) { this.$store.commit('setActiveDetailTab', value == "0" ? "tab-passages" : "tab-related") }
+			get() { return this.$store.getters.activeDetailTab === "tab-passages" ? 0 : 1},
+			set(value) { this.$store.commit('setActiveDetailTab', value == 0 ? "tab-passages" : "tab-related") }
 		},
 		parsedPassages() {
 			// https://blog.mastykarz.nl/regular-expressions-in-javascript-dont-support-the-single-line-mode/
