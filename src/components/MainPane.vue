@@ -135,7 +135,7 @@
 
 <script>
 
-import mapConfig from '../data/map-config.json'
+import mapConfig from '../../map-config.json'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {

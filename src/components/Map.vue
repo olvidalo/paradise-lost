@@ -23,9 +23,9 @@ import 'Leaflet.sync'
 import MapPopup from './MapPopup.vue'
 import Vue from 'Vue'
 
-import dataGenesis from '../data/MappableGenesis_2018.csv'
-import dataBible from '../data/bible.csv'
-import placeData from '../data/places.csv'
+import dataGenesis from '../data-preprocessed/MappableGenesis_2018.csv'
+import dataBible from '../data-preprocessed/bible.csv'
+import placeData from '../data-preprocessed/places.csv'
 
 import * as d3 from 'd3'
 import { arc, pie } from 'd3-shape'

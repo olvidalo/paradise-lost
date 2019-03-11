@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "rollup -c -w --environment NODE_ENV:dev,PORT:8080",
-    "build:dev": "npm run validate && rollup -c -w --environment NODE_ENV:dev",
-    "build:prod": "rollup -c --environment NODE_ENV:prod",
+    "build:dev": "rollup -c -w --environment NODE_ENV:dev",
+    "build:prod": "npm run preprocess && npm run validate && rollup -c --environment NODE_ENV:prod",
     "deploy": "npm run build:prod && rsync -avz dist/ aldebaran.uberspace.de:html/paradise-lost",
-    "validate": "node validate-data.js"
+    "validate": "node scripts/validate-data.js",
+    "preprocess": "node scripts/preprocess-data.js"
   },
   "author": "Marcel Schaeben",
   "license": "GPLv3",
@@ -20,6 +21,7 @@
     "leaflet-providers": "^1.5.0",
     "leaflet.markercluster": "^1.4.1",
     "marked": "^0.3.19",
+    "strip-bom": "^3.0.0",
     "typeface-playfair-display": "0.0.54",
     "vue": "^2.6.8",
     "vue-material": "^1.0.0-beta-10.2",
@@ -60,6 +62,6 @@
     "stylus": "^0.54.5",
     "vue-template-compiler": "^2.6.8",
     "vuetify": "^1.5.4",
-    "xslt": "^0.9.1"
+    "xlsx": "^0.14.1"
   }
 }

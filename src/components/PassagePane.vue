@@ -61,7 +61,7 @@
 <script>
 import marked from 'marked';
 
-import placeData from '../data/places.csv'
+import placeData from '../data-preprocessed/places.csv'
 export default {
 	name: "PassagePane",
 	computed: {

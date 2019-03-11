@@ -2,8 +2,8 @@ import Vue from "vue"
 import Vuex from "vuex"
 import VueResource from 'vue-resource'
 
-import mapConfig from '../data/map-config.json'
-import placeData from '../data/places.csv'
+import mapConfig from '../../map-config.json'
+import placeData from '../data-preprocessed/places.csv'
 
 Vue.use(Vuex)
 Vue.use(VueResource)

@@ -31,7 +31,7 @@ let plugins = [
     }),
     alias({ vue$: 'vue/dist/vue.common.js' }),
     dsv({
-        exclude: 'node_modules/**'
+        exclude: ['node_modules/**', 'data/**']
     }),
     vue({ autoStyles: true, styleToImports: true, css: false }),
     scss({
@@ -47,7 +47,8 @@ let plugins = [
     }),
     babel({
         //objectAssign: 'Object.assign',
-        exclude: ['**/*.json', '**/*.styl']
+        exclude: ['**/*.json', '**/*.styl'],
+        compact: true
     }),
     commonjs({exclude: ['**/*.json', '**/*.styl']}),
     nodeResolve({
