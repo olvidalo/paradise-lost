@@ -31,5 +31,28 @@
 			"url": "https://mapwarper.net/maps/tile/27639/{z}/{x}/{y}.png",
 			"bounds": [[33.440, 38.306], [30.097, 29.319]]
 		}
+	],
+	"colorSchemes": [
+		{
+			"good": "#4169e1",
+			"bad": "#b22222",
+			"neutral": "#555555",
+			"genesis": "green",
+			"bible": "#7e7156"
+		},
+		{
+			"good": "#66c2a5",
+			"bad": "#fc8d62",
+			"neutral": "#8da0cb",
+			"genesis": "green",
+			"bible": "#7e7156"
+		},
+		{
+			"good": "#91bfdb",
+			"bad": "#fc8d59",
+			"neutral": "#ffffbf",
+			"genesis": "green",
+			"bible": "#7e7156"
+		}
 	]
 }

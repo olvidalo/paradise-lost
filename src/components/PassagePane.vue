@@ -22,12 +22,11 @@
 					  	    <v-card color="transparent" class="elevation-0">
 					  	    	<v-card-text>
 					  	    		<div class="passage" v-for="passage in parsedPassages">
-					  	    			<div class="passage-text morality" v-bind:class="passage.morality">
+					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">
 					  	    				{{ passage.text }}
 					  	    			</div>
 					  	    			<div class="reference">({{ passage.pos }})</div>
 					  	    		  </div>	
-					  	    		</div>
 					  	    	</v-card-text>
 					  	    </v-card>
 					  	  </v-tab-item>
@@ -52,6 +51,7 @@
 				<div>
 					<div class="footer transparent">
 						<v-btn flat @click="$store.commit('setPassagePaneOpen', false)">Close</v-btn>
+					</div>
 				</div>
 			</v-layout>
 	</v-container>
@@ -67,8 +67,8 @@ export default {
 	computed: {
 		selectedPlace() { return this.$store.getters.selectedPlace },
 		activeTab: {
-			get() { return this.$store.getters.activeDetailTab === "tab-passages" ? "0" : "1"},
-			set(value) { this.$store.commit('setActiveDetailTab', value == "0" ? "tab-passages" : "tab-related") }
+			get() { return this.$store.getters.activeDetailTab === "tab-passages" ? 0 : 1},
+			set(value) { this.$store.commit('setActiveDetailTab', value == 0 ? "tab-passages" : "tab-related") }
 		},
 		parsedPassages() {
 			// https://blog.mastykarz.nl/regular-expressions-in-javascript-dont-support-the-single-line-mode/
@@ -90,6 +90,14 @@ export default {
 		relatedPlaces() {
 			return placeData
 					.filter(place => place["Related"] === this.selectedPlace["Related"] && place["Place"] !== this.selectedPlace["Place"])
+		},
+		colorScheme() {
+		    const scheme = this.$store.getters.colorScheme
+			return {
+		        positive: scheme["good"],
+				negative: scheme["bad"],
+				neutral: scheme["neutral"]
+			}
 		}
 	},
 	filters: {

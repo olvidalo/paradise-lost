@@ -34,15 +34,6 @@ import marked from 'marked';
 
 export default {
   components: { MapPopup },
-  data: () => ({
-    moralityColors: {
-      good: "#4169e1",
-      bad: "#b22222",
-      neutral: "#555555",
-      genesis: "green",
-      bible: "#7e7156"
-    }
-  }),
   props: {
     n: { type: Number, required: true }
   },
@@ -53,6 +44,8 @@ export default {
     showGenesis() { return this.$store.getters.mapConfigs[this.n].showGenesis },
     showBible() { return this.$store.getters.mapConfigs[this.n].showBible },
     showParadiseLost() { return this.$store.getters.mapConfigs[this.n].showParadiseLost },
+
+    colorScheme() { return this.$store.getters.colorScheme },
 
     selectedPlace() { return this.$store.getters.selectedPlace },
     markerType() { return this.$store.getters.mapConfigs[this.n].markerType },
@@ -133,6 +126,17 @@ export default {
     showParadiseLost: {
       handler(showParadiseLost) {
         this.toggleParadiseLostMarkers(showParadiseLost)
+      }
+    },
+    colorScheme: {
+      handler(colorScheme) {
+        this.toggleParadiseLostMarkers(false)
+        this.toggleBibleMarkers(false)
+        this.toggleGenesisMarkers(false)
+
+        this.toggleBibleMarkers(this.showBible)
+        this.toggleGenesisMarkers(this.showGenesis)
+        this.toggleParadiseLostMarkers(this.showParadiseLost)
       }
     },
     selectedPlace: {
@@ -263,7 +267,6 @@ export default {
             const max = Object.keys(m).reduce((max, key) => {return `${Math.max(max, key)}`}, 0)
 
 
-            const moralityColors = this.moralityColors
             const scaleForWeight = (size, weight) => size + parseInt(weight) * 3 
 
             const iconFunctions = {
@@ -281,7 +284,7 @@ export default {
                 const piedata = [good, bad, neutral]
 
                 const color = d3.scaleOrdinal()
-                .range([moralityColors["good"], moralityColors["bad"], moralityColors["neutral"]]);
+                .range([colorScheme["good"], colorScheme["bad"], colorScheme["neutral"]]);
 
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
@@ -352,9 +355,9 @@ export default {
                   html: `
                   <div style="position: relative;"><svg width="${w}px" height="${h}px" viewbox="0 0 50 50">
                   <path style="fill: white;}; opacity: 1;" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                    <path style="fill: ${moralityColors['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                    <path style="fill: ${moralityColors['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                    <path style="fill: ${moralityColors['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${colorScheme['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${colorScheme['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
+                    <path style="fill: ${colorScheme['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     
                   </svg></div>`
                 }
@@ -404,7 +407,7 @@ export default {
 
         dataGenesis.forEach((place) => {
           const icon = L.VectorMarkers.icon({
-            markerColor: this.moralityColors['genesis']
+            markerColor: this.colorScheme['genesis']
           })
 
 
@@ -437,7 +440,7 @@ export default {
 
         dataBible.forEach((place) => {
           const icon = L.VectorMarkers.icon({
-            markerColor: this.moralityColors['bible']
+            markerColor: this.colorScheme['bible']
           })
 
 

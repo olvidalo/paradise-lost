@@ -25,6 +25,7 @@
                   <span>bad</span>
                 </v-layout>
                 <div id="legend">
+                <div id="legend" :style="legendStyle">
                 </div>
                </v-card>
               </v-flex>
@@ -47,6 +48,7 @@ import Map from './Map.vue'
 import PassagePane from './PassagePane.vue'
 import MainPane from './MainPane.vue'
 import MapContainer from './MapContainer.vue'
+import {mapGetters} from "vuex";
 
 export default {
   name: "app",
@@ -63,6 +65,17 @@ export default {
       set(value) { this.$store.commit('setPassagePaneOpen', value) }
     },
     selectedPlace() { return this.$store.getters.selectedPlace },
+    ...mapGetters(['colorScheme']),
+
+      legendStyle: {
+        get() { return {
+            background: [
+             `-moz-linear-gradient(left, ${this.colorScheme["good"]} 0%, ${this.colorScheme["good"]} 33%, ${this.colorScheme["neutral"]} 48%, ${this.colorScheme["neutral"]} 52%, ${this.colorScheme["bad"]} 66%, ${this.colorScheme["bad"]} 100%)`,
+             `-webkit-linear-gradient(${this.colorScheme["good"]} 0%, ${this.colorScheme["good"]} 33%, ${this.colorScheme["neutral"]} 48%, ${this.colorScheme["neutral"]} 52%, ${this.colorScheme["bad"]} 66%, ${this.colorScheme["bad"]} 100%)`,
+             `linear-gradient(to right, ${this.colorScheme["good"]} 0%, ${this.colorScheme["good"]} 33%, ${this.colorScheme["neutral"]} 48%, ${this.colorScheme["neutral"]} 52%, ${this.colorScheme["bad"]} 66%, ${this.colorScheme["bad"]} 100%)`
+            ]
+        }}
+      }
   },
   watch: {
     '$route'(to, from) {
@@ -85,6 +98,10 @@ export default {
 
 @import url(https://fonts.googleapis.com/css?family=Playfair%20Display:bold,black);
 @import url(https://fonts.googleapis.com/css?family=Lato:bold,black,regular);
+@import 'node_modules/leaflet/dist/leaflet';
+@import 'node_modules/leaflet.markercluster/dist/MarkerCluster';
+@import 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default';
+
 /*@import 'node_modules/vue-material/src/components/MDLayout/mixins';
 */
 
@@ -185,10 +202,11 @@ h1, h2, h3, h4, h5, h6, .headline {
 
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#4169e1+0,496fe1+33,767676+48,767676+52,bb2525+66,b22222+100 */
-  background: rgb(65,105,225); /* Old browsers */
-  background: -moz-linear-gradient(left, rgba(65,105,225,1) 0%, rgba(73,111,225,1) 33%, rgba(118,118,118,1) 48%, rgba(118,118,118,1) 52%, rgba(187,37,37,1) 66%, rgba(178,34,34,1) 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to right, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  /*background: rgb(65,105,225);
+  background: -moz-linear-gradient(left, rgba(65,105,225,1) 0%, rgba(73,111,225,1) 33%, rgba(118,118,118,1) 48%, rgba(118,118,118,1) 52%, rgba(187,37,37,1) 66%, rgba(178,34,34,1) 100%);
+  background: -webkit-linear-gradient(left, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%);
+  background: linear-gradient(to right, rgba(65,105,225,1) 0%,rgba(73,111,225,1) 33%,rgba(118,118,118,1) 48%,rgba(118,118,118,1) 52%,rgba(187,37,37,1) 66%,rgba(178,34,34,1) 100%); */
+
 }
 
 /*html, body, .app { height: 100%; margin: 0;}*/

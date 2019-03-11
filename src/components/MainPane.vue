@@ -86,10 +86,37 @@
 				  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
 				  	</v-list-tile>
 
-						<v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'pin' }" @click="markerType = 'pin'">
-					  	  <v-list-tile-content><v-list-tile-title>Pins</v-list-tile-title></v-list-tile-content>
-					  	  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
-					  	</v-list-tile>
+					<v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'pin' }" @click="markerType = 'pin'">
+					  <v-list-tile-content><v-list-tile-title>Pins</v-list-tile-title></v-list-tile-content>
+					  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+					</v-list-tile>
+
+					  <v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'circle' }" @click="markerType = 'circle'">
+						  <v-list-tile-content><v-list-tile-title>Circles</v-list-tile-title></v-list-tile-content>
+						  <v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
+					  </v-list-tile>
+
+					  <v-list-tile avatar ripple>
+						  <v-list-tile-content>
+							  Color Scheme
+						  </v-list-tile-content>
+						  <v-list-tile-action>
+							  <v-btn-toggle class="scheme-toggle" v-model="colorSchemeIndex" mandatory>
+								  <v-btn flat :value="0">
+									  1
+								  </v-btn>
+								  <v-btn flat :value="1">
+									  2
+								  </v-btn>
+								  <v-btn flat :value="2">
+									  3
+								  </v-btn>
+							  </v-btn-toggle>
+						  </v-list-tile-action>
+					  </v-list-tile>
+					  <v-list-tile avatar ripple>
+
+					  </v-list-tile>
 				  </v-list-group>
 							
 
@@ -144,6 +171,10 @@ export default {
 		selectedMap: {
 			get() { return this.$store.state.selectedMap },
 			set(value)  {}
+		},
+		colorSchemeIndex: {
+			get() { return this.$store.getters.colorSchemeIndex },
+			set(value) { this.$store.commit('setColorSchemeIndex', value) }
 		},
 		...mapGetters([
 			'maps', 'activeMaps', 'overlayMap'
@@ -276,7 +307,7 @@ export default {
 	}
 }
 
-.map-toggle {
+.map-toggle, .scheme-toggle > * {
 	width: 25px;
 	height: 25px;
 
