@@ -20,7 +20,7 @@
 			<v-btn class="map-toggle add" v-on:click="addMap()" v-if="activeMaps.length < 4">+</v-btn>
 		</div>
 			<div class="menu-list">
-				<v-list  dense id="menu" :key="map" >
+				<v-list  dense id="menu">
 				  <v-list-group no-action>
 				  	<v-list-tile slot="activator">
 				  	  <v-list-tile-content><v-list-tile-title>Base Maps</v-list-tile-title></v-list-tile-content>
@@ -46,7 +46,7 @@
 				  	</v-list-tile>
 
 				  	<v-list-tile>
-				  		<v-slider v-model="overlayMapOpacity" min="0" max="1" step="0.01"> {{ Math.round(overlayMapOpacity * 100) }}%
+						<v-slider v-model="overlayMapOpacity" min="0" max="1" step="0.01"> {{ Math.round(overlayMapOpacity * 100) }}%</v-slider>
 				  	</v-list-tile>
 				  </v-list-group>
 

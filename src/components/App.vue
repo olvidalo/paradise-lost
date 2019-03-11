@@ -2,10 +2,6 @@
 
   <div>
     <MapContainer id="mapContainer"/>
-    <!-- <div id="mapContainer">
-      <Map ref="map1" class="map" :n="1"></Map>
-      <Map ref="map2" class="map" :n="2"></Map>
-    </div> -->
     <v-app id="app" class="overlay">
      
     
@@ -24,7 +20,6 @@
                   <span>neutral</span>
                   <span>bad</span>
                 </v-layout>
-                <div id="legend">
                 <div id="legend" :style="legendStyle">
                 </div>
                </v-card>
@@ -32,7 +27,7 @@
              </v-layout>
             </v-container>
           </v-content> 
-          <v-navigation-drawer v-model="drawer" app absolute :right="true" v-model="passagePaneOpen" width="400" :disable-resize-watcher="true" :hide-overlay="true" stateless>
+          <v-navigation-drawer app absolute :right="true" v-model="passagePaneOpen" width="400" :disable-resize-watcher="true" :hide-overlay="true" stateless>
            <PassagePane/>
          </v-navigation-drawer>
     
