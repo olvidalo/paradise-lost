@@ -22,7 +22,7 @@
 					  	    <v-card color="transparent" class="elevation-0">
 					  	    	<v-card-text>
 					  	    		<div class="passage" v-for="passage in parsedPassages">
-					  	    			<div class="passage-text morality" v-bind:class="passage.morality">
+					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">
 					  	    				{{ passage.text }}
 					  	    			</div>
 					  	    			<div class="reference">({{ passage.pos }})</div>
@@ -90,6 +90,14 @@ export default {
 		relatedPlaces() {
 			return placeData
 					.filter(place => place["Related"] === this.selectedPlace["Related"] && place["Place"] !== this.selectedPlace["Place"])
+		},
+		colorScheme() {
+		    const scheme = this.$store.getters.colorScheme
+			return {
+		        positive: scheme["good"],
+				negative: scheme["bad"],
+				neutral: scheme["neutral"]
+			}
 		}
 	},
 	filters: {

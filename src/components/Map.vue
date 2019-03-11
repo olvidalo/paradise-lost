@@ -91,7 +91,7 @@ export default {
       immediate: true,
       handler(newBaseLayer) {
         if (!newBaseLayer || !this.map) return
-        this.setBaseLayer(newBaseLayer.id)
+        this.setBaseLayer(newBaseLayer.id, newBaseLayer.params)
       }
     },
     overlayMap: {
@@ -200,9 +200,10 @@ export default {
       }
     }
 
-    this.setBaseLayer = function(id) {
+    this.setBaseLayer = function(id, params) {
+      params = params || {}
       this.currentBaseLayer && this.map.removeLayer(this.currentBaseLayer)
-      this.currentBaseLayer = L.tileLayer.provider(id).addTo(this.map).bringToBack()
+      this.currentBaseLayer = L.tileLayer.provider(id, params).addTo(this.map).bringToBack()
     }
 
     this.setOverlayMap = function(overlayMap) {
@@ -533,7 +534,7 @@ export default {
         // .on('move', this.moveHandler)
 
         L.control.zoom({position: 'bottomleft'}).addTo(this.map)
-        this.setBaseLayer(this.baseLayer.id)
+        this.setBaseLayer(this.baseLayer.id, this.baseLayer.params)
         this.overlayMap && this.setOverlayMap(this.overlayMap)
         this.toggleGenesisMarkers(this.showGenesis)
         this.toggleBibleMarkers(this.showBible)
