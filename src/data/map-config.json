@@ -2,7 +2,7 @@
 	"baseLayers": [
 		{ 
 			"name": "World Terrain",
-			"id": "Esri.WorldTerrain" 
+			"id": "Esri.WorldTerrain"
 		},
 		{
 			"name": "Stamen Terrain",
@@ -15,19 +15,42 @@
 		{
 			"name": "Nat Geo",
 			"id": "Esri.NatGeoWorldMap"
+		},
+		{
+			"name": "CartoDB Voyager",
+			"id": "CartoDB.VoyagerNoLabels"
+		},
+		{
+			"name": "CartoDB Positron",
+			"id": "CartoDB.PositronNoLabels"
+		},
+		{
+			"name": "Geoportail France",
+			"id": "GeoportailFrance.maps"
+		},
+		{
+			"name": "Thunderforest Pioneer",
+			"id": "Thunderforest.Pioneer",
+			"params": {
+				"apikey": "506561be1ca2442b85f2be9a931bfc44"
+			}
+		},
+		{
+			"name": "OpenStreetMap.DE",
+			"id": "OpenStreetMap.DE"
 		}
 	],
 
 	"overlayMaps": [
 		{
 			"id": "turkish-empire",
-			"name": "Turkish Empire",
+			"name": "The Turkish Empire",
 			"url": "https://mapwarper.net/maps/tile/27916/{z}/{x}/{y}.png",
 			"bounds": [[57.200, 107.405], [7.130, -36.383]]
 		},
 		{
 			"id": "king-james",
-			"name": "King James",
+			"name": "The Holy Land",
 			"url": "https://mapwarper.net/maps/tile/27639/{z}/{x}/{y}.png",
 			"bounds": [[33.440, 38.306], [30.097, 29.319]]
 		}

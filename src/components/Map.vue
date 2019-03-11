@@ -91,7 +91,7 @@ export default {
       immediate: true,
       handler(newBaseLayer) {
         if (!newBaseLayer || !this.map) return
-        this.setBaseLayer(newBaseLayer.id)
+        this.setBaseLayer(newBaseLayer.id, newBaseLayer.params)
       }
     },
     overlayMap: {
@@ -199,9 +199,10 @@ export default {
       }
     }
 
-    this.setBaseLayer = function(id) {
+    this.setBaseLayer = function(id, params) {
+      params = params || {}
       this.currentBaseLayer && this.map.removeLayer(this.currentBaseLayer)
-      this.currentBaseLayer = L.tileLayer.provider(id).addTo(this.map).bringToBack()
+      this.currentBaseLayer = L.tileLayer.provider(id, params).addTo(this.map).bringToBack()
     }
 
     this.setOverlayMap = function(overlayMap) {
@@ -267,9 +268,19 @@ export default {
             const max = Object.keys(m).reduce((max, key) => {return `${Math.max(max, key)}`}, 0)
 
 
-            const scaleForWeight = (size, weight) => size + parseInt(weight) * 3 
+            const colorScheme = this.colorScheme
+            const scaleForWeight = (size, weight) => size + parseInt(weight) * 3
 
-            const iconFunctions = {
+            const markerOptions = {
+              opacity: 0.8,
+              weight: parseInt(place["Weight"]),
+              title: place["Place"],
+              place: place
+            }
+
+            const latLng = [place["Latitude"], place["Longitude"]]
+
+            const markerGenerators = {
               "pie": function() {
                 const good = parseInt(place["Postive"])
                 const bad = parseInt(place["Negative"])
@@ -320,7 +331,7 @@ export default {
 
                 //
                 
-                return L.divIcon(iconOptions)
+                return L.marker(latLng, {...markerOptions, icon: L.divIcon(iconOptions)})
               },
               "pin": function() {
 
@@ -362,29 +373,65 @@ export default {
                   </svg></div>`
                 }
 
-                return L.divIcon(iconOptions)
+                return L.marker(latLng, {...markerOptions, icon: L.divIcon(iconOptions)})
+              },
+              "circle": function() {
+                const good = parseInt(place["Postive"])
+                const bad = parseInt(place["Negative"])
+                const neutral = parseInt(place["Neutral"])
+
+                const weight = good + bad + neutral
+
+
+
+                const radiusBase = scaleForWeight(40, weight)
+                const radius = isNaN(radiusBase) ? 0 : radiusBase / 4
+                const piedata = [good / weight, bad / weight, neutral / weight]
+
+                const strokeWidth = 2
+
+
+                const iconOptions = {
+                  iconSize: [ radius * 2, radius * 2 ],
+                  // iconAnchor: [ 15, 50 ],
+                  // popupAnchor: [ 2, -40 ],
+                  // shadowAnchor: [ 39, 45 ],
+                  // shadowSize: [ radius + 4, radius + 4 ],
+                  className: 'vector-marker',
+                  prefix: 'fa',
+                  spinClass: 'fa-spin',
+                  extraIconClasses: '',
+                  extraDivClasses: '',
+                  icon: 'home',
+                  markerColor: 'blue',
+                  iconColor: 'white',
+                  viewBox: `0 0 ${radius * 2} ${radius * 2}`,
+                  html: `
+                  <div style="position: relative;"><svg width="${radius * 2}px" height="${radius * 2}px" viewbox="0 0 ${radius * 2} ${radius * 2}">
+                   <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[0]}" fill="${colorScheme['good']}" />
+                    <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[1]}" fill="${colorScheme['bad']}" />
+                    <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[2]}" fill="${colorScheme['neutral']}" />
+
+                  </svg></div>`
+                }
+
+                return L.marker(latLng, {...markerOptions, icon: L.divIcon(iconOptions)})
               }
             }
 
 
           
 
-            L.marker([place["Latitude"], place["Longitude"]], {
-              icon: iconFunctions[this.markerType](),
-              opacity: 0.9,
-              weight: parseInt(place["Weight"]),
-              title: place["Place"],
-              place: place
-            })
-            .bindTooltip(place["Place"])
-            //.on('popupopen', () => this.$store.commit('setSelectedPlace', {place: place, router: this.$router}))
-            .on('click', () => this.$router.push({hash: place["Place"]}))
-            .on('mouseover', (e) => e.target.setZIndexOffset(1000) )
-            .on('mouseout', (e) => e.target.setZIndexOffset(0) )
-            //.on('popupclose', () => this.$store.dispatch('unselectPlace', this.$router))
-            //.on('popupclose', () => this.$router.push({hash: ""}))
-            .addTo(this.paradiseLostMarkers)
-            })
+            markerGenerators[this.markerType]()
+              .bindTooltip(place["Place"])
+              //.on('popupopen', () => this.$store.commit('setSelectedPlace', {place: place, router: this.$router}))
+              .on('click', () => this.$router.push({hash: place["Place"]}))
+              .on('mouseover', (e) => e.target.setZIndexOffset(1000) )
+              .on('mouseout', (e) => e.target.setZIndexOffset(0) )
+              //.on('popupclose', () => this.$store.dispatch('unselectPlace', this.$router))
+              //.on('popupclose', () => this.$router.push({hash: ""}))
+              .addTo(this.paradiseLostMarkers)
+          })
         }
 
 
@@ -475,27 +522,29 @@ export default {
       }
   },
   mounted() {
-    console.log(`crreateing leaflet-${this.n}`)
-    this.map = L.map(`leaflet-${this.n}`, {zoomControl: false, maxZoom: 18})
-      .on('click', () => this.$router.push({hash: ""}))
-      .on('load', (event) => this.$emit('map-init', event.target))
-      .setView([32.738, 36.560], 4)
-       // .on('movestart', this.moveStartHandler)
-      // .on('moveend', this.moveEndHandler)
-      // .on('move', this.moveHandler)
+    setTimeout(() => {
+        console.log(`crreateing leaflet-${this.n}`)
+        this.map = L.map(`leaflet-${this.n}`, {zoomControl: false, maxZoom: 18})
+            .on('click', () => this.$router.push({hash: ""}))
+            .on('load', (event) => this.$emit('map-init', event.target))
+            .setView([32.738, 36.560], 4)
+        // .on('movestart', this.moveStartHandler)
+        // .on('moveend', this.moveEndHandler)
+        // .on('move', this.moveHandler)
 
-    L.control.zoom({position: 'bottomleft'}).addTo(this.map)
-    this.setBaseLayer(this.baseLayer.id)
-    this.overlayMap && this.setOverlayMap(this.overlayMap)
-    this.toggleGenesisMarkers(this.showGenesis)
-    this.toggleBibleMarkers(this.showBible)
-    this.toggleParadiseLostMarkers(this.showParadiseLost)
+        L.control.zoom({position: 'bottomleft'}).addTo(this.map)
+        this.setBaseLayer(this.baseLayer.id, this.baseLayer.params)
+        this.overlayMap && this.setOverlayMap(this.overlayMap)
+        this.toggleGenesisMarkers(this.showGenesis)
+        this.toggleBibleMarkers(this.showBible)
+        this.toggleParadiseLostMarkers(this.showParadiseLost)
 
-    console.log(this.hasMarkers())
+        console.log(this.hasMarkers())
 
-    if (this.selectedPlace && this.hasMarkers()) {
-      this.selectPlaceOnMap(this.selectedPlace)
-    }
+        if (this.selectedPlace && this.hasMarkers()) {
+            this.selectPlaceOnMap(this.selectedPlace)
+        }
+    })
 
   },
   beforeDestroy() {
@@ -508,12 +557,7 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
-
-  @import 'node_modules/leaflet/dist/leaflet';
-  @import 'node_modules/leaflet.markercluster/dist/MarkerCluster';
-  @import 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default';
-
+<style lang='scss'>
 
   .map-wrap {
     position: relative;
