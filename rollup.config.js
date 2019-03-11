@@ -6,9 +6,10 @@ import scss from 'rollup-plugin-scss'
 import json from 'rollup-plugin-json'
 import serve from 'rollup-plugin-serve'
 import alias from 'rollup-plugin-alias'
-import buble from 'rollup-plugin-buble'
+import babel from 'rollup-plugin-babel'
+//import buble from 'rollup-plugin-buble'
 import uglify from 'rollup-plugin-uglify'
-import cssnano from 'cssnano'
+//import cssnano from 'cssnano'
 import postcss from 'postcss'
 import replace from 'rollup-plugin-replace'
 import builtins from 'rollup-plugin-node-builtins';
@@ -32,7 +33,7 @@ let plugins = [
     dsv({
         exclude: 'node_modules/**'
     }),
-    vue({ autoStyles: false, styleToImports: true }),
+    vue({ autoStyles: true, styleToImports: true, css: false }),
     scss({
         output: true,
         output: 'dist/styles.scss.css',
@@ -44,21 +45,21 @@ let plugins = [
         extensions: ['.styl'],
         use: ['stylus']
     }),
-    buble({
-        objectAssign: 'Object.assign',
+    babel({
+        //objectAssign: 'Object.assign',
         exclude: ['**/*.json', '**/*.styl']
     }),
+    commonjs({exclude: ['**/*.json', '**/*.styl']}),
     nodeResolve({
         jsnext: true,
         main: true,
         browser: true,
         exclude: ['**/*.json', '**/*.styl']
     }),
-    commonjs({exclude: ['**/*.json', '**/*.styl']}),
     nodeGlobals(),
     copy({ 'src/index.html': 'dist/index.html' }),
     process.env.NODE_ENV === 'prod' && replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
-    process.env.NODE_ENV === 'prod' && uglify(),
+    // process.env.NODE_ENV === 'prod' && uglify(),
     process.env.NODE_ENV !== 'prod' && process.env.PORT !== undefined && livereload(),
     process.env.PORT !== undefined && serve({
         contentBase: './dist/',
@@ -74,7 +75,8 @@ let config = {
         format: 'iife',
         sourcemap: true //process.env.NODE_ENV !== 'prod'
     },
-    plugins: plugins
+    plugins: plugins,
+    treeshake: false
 }
 
 export default config
