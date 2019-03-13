@@ -248,7 +248,24 @@ export default {
       return popup.$el
     }
 
-    this.toggleParadiseLostMarkers = (show) => {
+    this.makeSVGIconOptions = (width, height, svgContent, options) => ({
+      iconSize: [ width, height ],
+      className: 'vector-marker',
+      html:`
+        <div style="position: relative;">
+          <svg width="${width}px" height="${height}px" viewbox="0 0 ${width} ${height}">
+              ${svgContent}
+          </svg>
+        </div>
+      `,
+      ...options
+    })
+
+    this.makeSVGCircle = (radius, strokeWidth, opacity, fillColor) => `
+      <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${opacity}" fill="${fillColor}" />
+    `
+
+   this.toggleParadiseLostMarkers = (show) => {
       if (show == false && this.paradiseLostMarkers) {
         this.map.removeLayer(this.paradiseLostMarkers)
         this.paradiseLostMarkers = null
@@ -280,6 +297,9 @@ export default {
 
             const latLng = [place["Latitude"], place["Longitude"]]
 
+            const makeSVGIconOptions = this.makeSVGIconOptions
+            const makeSVGCircle = this.makeSVGCircle
+
             const markerGenerators = {
               "pie": function() {
                 const good = parseInt(place["Postive"])
@@ -294,23 +314,25 @@ export default {
 
                 const piedata = [good, bad, neutral]
 
+                const border = 2
+
                 const color = d3.scaleOrdinal()
                 .range([colorScheme["good"], colorScheme["bad"], colorScheme["neutral"]]);
 
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
                  const svg2 = d3.select(svg)
-                              .attr('width', w)
-                              .attr('height', h)
+                              .attr('width', w + border)
+                              .attr('height', h + border)
                               .append('g')
-                              .attr('transform', `translate(${w / 2},${h / 2} )`)
+                              .attr('transform', `translate(${(w + border) / 2},${(h + border) / 2} )`)
 
                 const theArc = arc()
                                 .innerRadius(w / 2)
                                 .outerRadius(0)
 
                 const thePie = pie()
-                              .value((d) => d)
+                              .value((d) => {console.log(d); return d})
                               .sort(null)
 
                 const path = svg2.selectAll('path')
@@ -319,14 +341,23 @@ export default {
                               .append('path')
                               .attr('d', theArc)
                               .attr('fill', (d, i) => color(i))
+                        .attr('stroke', () => 'gray')
+                        .attr('stroke-width', (d, i) => {
+                          console.log(d)
+                          return isNaN(d.data) || d.data == 0 ? 0 : border
+                        })
 
                 const iconOptions = {
-                  iconSize: [ w, h ],
+                  iconSize: [ w + border, h + border],
                   className: 'vector-marker',
                   extraIconClasses: 'pie-marker-icon',
                   extraDivClasses: 'pie-marker',
                   html: `
-                  <div style="position: relative;"><div style="position: absolute; width: ${w}px; height: ${h}px; top: 0; left: 0;">${(new window.XMLSerializer()).serializeToString(svg)}</div></div>`
+                  <div style="position: relative;">
+                    <div style="position: absolute; width: ${w + border}px; height: ${h + border}px; top: 0; left: 0;">
+                        ${(new window.XMLSerializer()).serializeToString(svg)}
+                    </div>
+                  </div>`
                 }
 
                 //
@@ -390,30 +421,13 @@ export default {
 
                 const strokeWidth = 2
 
+                const iconSVGContent = `
+                  ${makeSVGCircle(radius, strokeWidth, piedata[0], colorScheme['good'])}
+                  ${makeSVGCircle(radius, strokeWidth, piedata[1], colorScheme['bad'])}
+                  ${makeSVGCircle(radius, strokeWidth, piedata[2], colorScheme['neutral'])}
+                `
 
-                const iconOptions = {
-                  iconSize: [ radius * 2, radius * 2 ],
-                  // iconAnchor: [ 15, 50 ],
-                  // popupAnchor: [ 2, -40 ],
-                  // shadowAnchor: [ 39, 45 ],
-                  // shadowSize: [ radius + 4, radius + 4 ],
-                  className: 'vector-marker',
-                  prefix: 'fa',
-                  spinClass: 'fa-spin',
-                  extraIconClasses: '',
-                  extraDivClasses: '',
-                  icon: 'home',
-                  markerColor: 'blue',
-                  iconColor: 'white',
-                  viewBox: `0 0 ${radius * 2} ${radius * 2}`,
-                  html: `
-                  <div style="position: relative;"><svg width="${radius * 2}px" height="${radius * 2}px" viewbox="0 0 ${radius * 2} ${radius * 2}">
-                   <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[0]}" fill="${colorScheme['good']}" />
-                    <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[1]}" fill="${colorScheme['bad']}" />
-                    <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${piedata[2]}" fill="${colorScheme['neutral']}" />
-
-                  </svg></div>`
-                }
+                const iconOptions = makeSVGIconOptions(radius * 2, radius * 2, iconSVGContent, {})
 
                 return L.marker(latLng, {...markerOptions, icon: L.divIcon(iconOptions)})
               }
@@ -453,17 +467,18 @@ export default {
         this.genesisMarkers = L.featureGroup()
 
         dataGenesis.forEach((place) => {
-          const icon = L.VectorMarkers.icon({
-            markerColor: this.colorScheme['genesis']
-          })
 
+          const radius = 8
+
+          const iconSVG = this.makeSVGCircle(radius, 2, 0.9, this.colorScheme["genesis"])
+          const iconOptions = this.makeSVGIconOptions(radius * 2, radius * 2, iconSVG, {})
 
           L.marker([place["Latitude"], place["Longitude"]], {
             title: place["Place"],
             opacity: 0.85,
             morality: "genesis",
             weight: 1,
-            icon: icon,
+            icon: L.divIcon(iconOptions),
             place: place
           })
           .bindTooltip(place["Place"])
@@ -486,9 +501,11 @@ export default {
         this.bibleMarkers = L.featureGroup()
 
         dataBible.forEach((place) => {
-          const icon = L.VectorMarkers.icon({
-            markerColor: this.colorScheme['bible']
-          })
+          const radius = 8
+
+
+          const iconSVG = this.makeSVGCircle(radius, 2, 0.9, this.colorScheme["bible"])
+          const iconOptions = this.makeSVGIconOptions(radius * 2, radius * 2, iconSVG, {})
 
 
           L.marker([place["Latitude"], place["Longitude"]], {
@@ -496,7 +513,7 @@ export default {
             opacity: 0.85,
             morality: "bible",
             weight: 1,
-            icon: icon,
+            icon: L.divIcon(iconOptions),
             place: place
           })
           .bindTooltip(place["Place"])
@@ -618,7 +635,7 @@ export default {
   }
 
   .vector-marker path {
-    stroke: none;
+    // stroke: none;
   }
 
   .related svg {
