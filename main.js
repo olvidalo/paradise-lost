@@ -12895,43 +12895,20 @@
 
   var baseLayers = [
   	{
-  		name: "World Terrain",
-  		id: "Esri.WorldTerrain"
+  		name: "CartoDB Voyager",
+  		id: "CartoDB.VoyagerNoLabels"
   	},
   	{
-  		name: "Stamen Terrain",
-  		id: "Stamen.Terrain"
+  		name: "World Terrain",
+  		id: "Esri.WorldTerrain"
   	},
   	{
   		name: "World Shaded Relief",
   		id: "Esri.WorldShadedRelief"
   	},
   	{
-  		name: "Nat Geo",
-  		id: "Esri.NatGeoWorldMap"
-  	},
-  	{
-  		name: "CartoDB Voyager",
-  		id: "CartoDB.VoyagerNoLabels"
-  	},
-  	{
-  		name: "CartoDB Positron",
-  		id: "CartoDB.PositronNoLabels"
-  	},
-  	{
   		name: "Geoportail France",
   		id: "GeoportailFrance.maps"
-  	},
-  	{
-  		name: "Thunderforest Pioneer",
-  		id: "Thunderforest.Pioneer",
-  		params: {
-  			apikey: "506561be1ca2442b85f2be9a931bfc44"
-  		}
-  	},
-  	{
-  		name: "OpenStreetMap.DE",
-  		id: "OpenStreetMap.DE"
   	}
   ];
   var overlayMaps = [
