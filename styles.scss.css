@@ -872,9 +872,6 @@ h1, h2, h3, h4, h5, h6, .headline {
   transition: opacity 0.7s ease-out, transform 0.7s ease-out;
   transition: opacity 0.7s ease-out, transform 0.7s ease-out, -webkit-transform 0.7s ease-out; }
 
-.vector-marker path {
-  stroke: none; }
-
 .related svg {
   -webkit-transform: scale(1.5);
           transform: scale(1.5); }
