@@ -12,7 +12,7 @@ const defaultMapConfig = {
     baseLayer:  mapConfig.baseLayers[0],
     overlayMap:  null,
     overlayMapOpacity: 0.75,
-    markerType: 'pin',
+    markerType: 'circle',
     showGenesis: false,
     showBible: false,
     showParadiseLost: false,
