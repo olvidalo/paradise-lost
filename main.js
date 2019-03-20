@@ -12909,6 +12909,10 @@
   	{
   		name: "Geoportail France",
   		id: "GeoportailFrance.maps"
+  	},
+  	{
+  		name: "Stamen Terrain",
+  		id: "Stamen.Terrain"
   	}
   ];
   var overlayMaps = [
