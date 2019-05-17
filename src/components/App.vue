@@ -6,7 +6,7 @@
      
     
           <v-content>
-            <v-container id="mainContainer" fluid fill-height>
+            <v-container id="mainContainer" v-bind:class="{menuCollapsed: menuCollapsed}" fluid fill-height>
               <v-card id="menu-container">
                 <v-navigation-drawer floating permanent class="elevation-1">
                   <MainPane />
@@ -60,7 +60,7 @@ export default {
       set(value) { this.$store.commit('setPassagePaneOpen', value) }
     },
     selectedPlace() { return this.$store.getters.selectedPlace },
-    ...mapGetters(['colorScheme']),
+    ...mapGetters(['colorScheme', 'menuCollapsed']),
 
       legendStyle: {
         get() { return {
@@ -91,7 +91,7 @@ export default {
 
 <style lang='scss'>
 
-@import url(https://fonts.googleapis.com/css?family=Playfair%20Display:bold,black);
+@import url(https://fonts.googleapis.com/css?family=Playfair%20Display:bold,regular);
 @import url(https://fonts.googleapis.com/css?family=Lato:bold,black,regular);
 @import 'node_modules/leaflet/dist/leaflet';
 @import 'node_modules/leaflet.markercluster/dist/MarkerCluster';
@@ -127,6 +127,11 @@ h1, h2, h3, h4, h5, h6, .headline {
 
 #mainContainer {
   padding: 24px;
+    &.menuCollapsed {
+        padding: 0px 24px 24px 24px;
+    }
+
+    transition: padding 0.5s;
 }
 
 .overlay {
@@ -161,6 +166,7 @@ h1, h2, h3, h4, h5, h6, .headline {
 #menu-container {
   align-self: flex-start;
   width: 247px;
+
 }
 
 .navigation-drawer {

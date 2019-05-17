@@ -27,6 +27,7 @@ firstMapConfig.showParadiseLost = true
 export default new Vuex.Store({
     state: {
        
+        menuCollapsed: false,
 
         selectedPlace: null,
         passagePaneOpen: false,
@@ -49,6 +50,8 @@ export default new Vuex.Store({
         colorSchemeIndex: 0
     },
     getters: {
+        menuCollapsed: state => state.menuCollapsed,
+
         baseLayer: state => state.mapConfigs[state.selectedMap].baseLayer,
         overlayMap: state => state.mapConfigs[state.selectedMap].overlayMap ,
 
@@ -82,6 +85,8 @@ export default new Vuex.Store({
         colorSchemeIndex: state => state.colorSchemeIndex
     },
     mutations: {
+        setMenuCollapsed: (state, collapsed) => state.menuCollapsed = collapsed,
+
     	setBaseLayer: (state, layerID) => state.mapConfigs[state.selectedMap].baseLayer = layerID,
     	setOverlayMap: (state, mapID) => state.mapConfigs[state.selectedMap].overlayMap = mapID,
         setMarkerType: (state, type) => state.mapConfigs[state.selectedMap].markerType = type,
