@@ -4,7 +4,7 @@ os:
   - osx
 
 node_js:
-  - "node"
+  - "11"
 
 script:
   - npm run build:prod
