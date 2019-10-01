@@ -13225,7 +13225,7 @@
   //
   //
   //
-  var script$3 = {name:"AboutDialog"};
+  var script$3 = {name:"AboutDialog",methods:{close(){this.$emit("close");}}};
 
   /* script */
   const __vue_script__$3 = script$3;
@@ -13371,7 +13371,7 @@
                 attrs: { color: "primary", flat: "" },
                 on: {
                   click: function($event) {
-                    _vm.dialog = false;
+                    return _vm.close()
                   }
                 }
               },
@@ -13390,7 +13390,7 @@
     /* style */
     const __vue_inject_styles__$3 = undefined;
     /* scoped */
-    const __vue_scope_id__$3 = "data-v-17f63698";
+    const __vue_scope_id__$3 = "data-v-238b857e";
     /* module identifier */
     const __vue_module_identifier__$3 = undefined;
     /* functional template */
@@ -13491,7 +13491,16 @@
                             expression: "aboutDialog"
                           }
                         },
-                        [_vm._v(" "), _c("about-dialog")],
+                        [
+                          _vm._v(" "),
+                          _c("about-dialog", {
+                            on: {
+                              close: function($event) {
+                                _vm.aboutDialog = false;
+                              }
+                            }
+                          })
+                        ],
                         1
                       )
                     ],
@@ -14135,7 +14144,7 @@
     /* style */
     const __vue_inject_styles__$4 = undefined;
     /* scoped */
-    const __vue_scope_id__$4 = "data-v-71dd7ce5";
+    const __vue_scope_id__$4 = "data-v-35fb2269";
     /* module identifier */
     const __vue_module_identifier__$4 = undefined;
     /* functional template */
