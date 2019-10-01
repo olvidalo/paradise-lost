@@ -44,6 +44,7 @@ import PassagePane from './PassagePane.vue'
 import MainPane from './MainPane.vue'
 import MapContainer from './MapContainer.vue'
 import {mapGetters} from "vuex";
+import AboutDialog from "./AboutDialog.vue";
 
 export default {
   name: "app",
@@ -52,7 +53,7 @@ export default {
     showAbout: false
   }),
   components: {
-    Map, PassagePane, MainPane, MapContainer
+    Map, PassagePane, MainPane, MapContainer, AboutDialog
   },
   computed: {
     passagePaneOpen: {

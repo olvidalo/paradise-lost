@@ -18,7 +18,17 @@
 				<div class="expanded-content" v-show="!menuCollapsed">
 					<div class="teaser">
 						This is a map of the locatable terrestrial places in John Milton's Paradise Lost.
-						<span class="about-btn"><a href="#">About this project</a></span>
+
+						<v-dialog v-model="aboutDialog" width="50vw" scrollable>
+							<template v-slot:activator="{ on }">
+								<span class="about-btn"><a href="#" v-on="on">About this project</a></span>
+							</template>
+
+							<about-dialog></about-dialog>
+						</v-dialog>
+
+
+
 					</div>
 
 
@@ -135,12 +145,6 @@
 
 						</v-list>
 					</div>
-					<!-- 	<v-layout id="main-collapse" align-center justify-space-between>
-                            <v-btn flat>About this project</v-btn>
-                            <v-btn flat>
-                              <v-icon>keyboard_arrow_up</v-icon>
-                            </v-btn>
-                        </v-layout> -->
 				</div>
 			</v-expand-transition>
 
@@ -157,14 +161,13 @@
 
 import mapConfig from '../../map-config.json'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import AboutDialog from "./AboutDialog.vue";
 
 export default {
 	name: "MainPane",
+	components: {AboutDialog},
 	data: () => ({
-	  // expandBaseMaps: true,
-	  // expandOverlayMaps: true,
-	  // expandMarkerOptions: false,
-	  // expandMainMenu: false
+	  aboutDialog: false
 	}),
 	computed: {
 		mapConfig() { return mapConfig },
