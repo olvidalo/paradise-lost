@@ -66,7 +66,7 @@
         <v-divider></v-divider>
         <v-card-actions class="grey lighten-3">
             <v-spacer></v-spacer>
-            <v-btn color="primary" flat @click="dialog = false">
+            <v-btn color="primary" flat @click="close()">
                 Close
             </v-btn>
         </v-card-actions>
@@ -75,7 +75,12 @@
 
 <script>
     export default {
-        name: "AboutDialog"
+        name: "AboutDialog",
+        methods: {
+            close() {
+                this.$emit("close")
+            }
+        }
     }
 </script>
 

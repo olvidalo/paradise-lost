@@ -24,7 +24,7 @@
 								<span class="about-btn"><a href="#" v-on="on">About this project</a></span>
 							</template>
 
-							<about-dialog></about-dialog>
+							<about-dialog @close="aboutDialog = false"></about-dialog>
 						</v-dialog>
 
 

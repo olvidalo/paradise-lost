@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="078291ec-69e2-422d-82e7-4a437ad41461" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AboutDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AboutDialog.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MainPane.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MainPane.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +106,7 @@
       <workItem from="1557995929792" duration="15000" />
       <workItem from="1557995967515" duration="19000" />
       <workItem from="1557995997539" duration="14599000" />
-      <workItem from="1569919002829" duration="3740000" />
+      <workItem from="1569919002829" duration="4247000" />
     </task>
     <servers />
   </component>
