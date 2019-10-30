@@ -12799,13 +12799,7 @@
                                                     ]
                                                 }
                                               },
-                                              [
-                                                _vm._v(
-                                                  "\n\t\t\t\t  \t    \t\t\t\t" +
-                                                    _vm._s(passage.text) +
-                                                    "\n\t\t\t\t  \t    \t\t\t"
-                                                )
-                                              ]
+                                              [_vm._v(_vm._s(passage.text))]
                                             ),
                                             _vm._v(" "),
                                             _c(
@@ -12927,7 +12921,7 @@
     /* style */
     const __vue_inject_styles__$2 = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = "data-v-7195d835";
+    const __vue_scope_id__$2 = "data-v-0308fd60";
     /* module identifier */
     const __vue_module_identifier__$2 = undefined;
     /* functional template */

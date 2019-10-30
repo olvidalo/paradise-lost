@@ -883,47 +883,50 @@ h1, h2, h3, h4, h5, h6, .headline {
 .unrelated svg {
   transform: scale(0.75);
   opacity: 0.55; }
-.wrap[data-v-7195d835] {
+.wrap[data-v-0308fd60] {
   height: 100%; }
 
-.tabs__items[data-v-7195d835] {
+.tabs__items[data-v-0308fd60] {
   overflow-y: auto;
   height: 100%; }
 
-.content[data-v-7195d835] {
+.content[data-v-0308fd60] {
   padding-bottom: 48px; }
 
-.footer[data-v-7195d835] {
+.footer[data-v-0308fd60] {
   justify-content: flex-end; }
 
-.morality[data-v-7195d835] {
+.passage-text[data-v-0308fd60] {
+  white-space: pre-line; }
+
+.morality[data-v-0308fd60] {
   border-left: solid 6px;
   padding-left: 0.5rem; }
 
-.morality.positive[data-v-7195d835] {
+.morality.positive[data-v-0308fd60] {
   border-color: #4169e1; }
 
-.morality.negative[data-v-7195d835] {
+.morality.negative[data-v-0308fd60] {
   border-color: #b22222; }
 
-.morality.neutral[data-v-7195d835] {
+.morality.neutral[data-v-0308fd60] {
   border-color: #555555; }
 
-.passage[data-v-7195d835] {
+.passage[data-v-0308fd60] {
   margin-bottom: 1em; }
 
-.reference[data-v-7195d835] {
+.reference[data-v-0308fd60] {
   text-align: right;
   font-style: italic; }
 
-#drawer-content[data-v-7195d835] {
+#drawer-content[data-v-0308fd60] {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%), url(assets/ricepaper_v3_@2X.png) repeat; }
 
-.headline[data-v-7195d835] {
+.headline[data-v-0308fd60] {
   padding-bottom: 16px;
   font-size: 1.8em; }
 
-.divider[data-v-7195d835] {
+.divider[data-v-0308fd60] {
   flex: 0;
   margin-bottom: 16px; }
 
