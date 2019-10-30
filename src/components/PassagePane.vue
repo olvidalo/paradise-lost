@@ -22,9 +22,7 @@
 					  	    <v-card color="transparent" class="elevation-0">
 					  	    	<v-card-text>
 					  	    		<div class="passage" v-for="passage in parsedPassages">
-					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">
-					  	    				{{ passage.text }}
-					  	    			</div>
+					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">{{ passage.text }}</div>
 					  	    			<div class="reference">({{ passage.pos }})</div>
 					  	    		  </div>	
 					  	    	</v-card-text>
@@ -123,6 +121,10 @@ export default {
 
 .footer {
 	justify-content: flex-end;
+}
+
+.passage-text {
+	white-space: pre-line;
 }
 
 .morality {
