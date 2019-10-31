@@ -1,5 +1,5 @@
 <template>
-	<v-container fluid v-if="$store.getters.selectedPlace" class="wrap" id="drawer-content">
+	<v-container v-if="$store.getters.selectedPlace">
 		
 			<v-layout :fill-height="true" column>
 				<div class="header">
@@ -106,18 +106,24 @@ export default {
 
 <style lang='scss' scoped>
 
-.wrap {
+.container {
 	height: 100%;
+	overflow-y: auto;
+}
+
+.v-card {
+	overflow-y: auto;
+}
+
+.v-card__text {
+	padding-bottom: 0;
 }
 
 .tabs__items {
-	overflow-y: auto;
-	height: 100%;
+	/*overflow-y: auto;*/
+	/*height: 100%;*/
 }
 
-.content {
-	padding-bottom: 48px;
-}
 
 .footer {
 	justify-content: flex-end;
@@ -149,11 +155,6 @@ export default {
 .reference {
 	text-align: right;
 	font-style: italic;
-}
-
-
-#drawer-content {
-	background: linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%), url(assets/ricepaper_v3_@2X.png) repeat;
 }
 
 .headline {

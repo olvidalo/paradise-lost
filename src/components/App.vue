@@ -170,8 +170,8 @@ h1, h2, h3, h4, h5, h6, .headline {
 
 }
 
-.navigation-drawer {
-  padding-bottom: 0;
+.v-navigation-drawer {
+    background: linear-gradient(145deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%), url(assets/ricepaper_v3_@2X.png) repeat;
 }
 
 #legend-pane {
