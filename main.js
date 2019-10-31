@@ -12710,7 +12710,6 @@
     return _vm.$store.getters.selectedPlace
       ? _c(
           "v-container",
-          { staticClass: "wrap", attrs: { fluid: "", id: "drawer-content" } },
           [
             _c(
               "v-layout",
@@ -12921,7 +12920,7 @@
     /* style */
     const __vue_inject_styles__$2 = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = "data-v-0308fd60";
+    const __vue_scope_id__$2 = "data-v-4aeea23b";
     /* module identifier */
     const __vue_module_identifier__$2 = undefined;
     /* functional template */
@@ -13520,36 +13519,88 @@
                         },
                         _vm._l(_vm.activeMaps, function(map, index) {
                           return _c(
-                            "v-btn",
+                            "v-tooltip",
                             {
-                              staticClass: "map-toggle",
-                              attrs: { flat: "", value: map },
-                              on: {
-                                click: function($event) {
-                                  return _vm.selectMap($event, map)
-                                }
-                              }
+                              attrs: { top: "" },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "activator",
+                                    fn: function(ref) {
+                                      var on = ref.on;
+                                      return [
+                                        _c(
+                                          "v-btn",
+                                          _vm._g(
+                                            {
+                                              staticClass: "map-toggle",
+                                              attrs: { flat: "", value: map },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.selectMap(
+                                                    $event,
+                                                    map
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            on
+                                          ),
+                                          [_vm._v(_vm._s(index + 1))]
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ],
+                                null,
+                                true
+                              )
                             },
-                            [_vm._v(_vm._s(index + 1))]
+                            [
+                              _vm._v(" "),
+                              _c("span", [
+                                _vm._v("Configure map " + _vm._s(index + 1))
+                              ])
+                            ]
                           )
                         }),
                         1
                       ),
                       _vm._v(" "),
-                      _vm.activeMaps.length < 4
-                        ? _c(
-                            "v-btn",
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { top: "" },
+                          scopedSlots: _vm._u([
                             {
-                              staticClass: "map-toggle add",
-                              on: {
-                                click: function($event) {
-                                  return _vm.addMap()
-                                }
+                              key: "activator",
+                              fn: function(ref) {
+                                var on = ref.on;
+                                return [
+                                  _vm.activeMaps.length < 4
+                                    ? _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          {
+                                            staticClass: "map-toggle add",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.addMap()
+                                              }
+                                            }
+                                          },
+                                          on
+                                        ),
+                                        [_vm._v("+")]
+                                      )
+                                    : _vm._e()
+                                ]
                               }
-                            },
-                            [_vm._v("+")]
-                          )
-                        : _vm._e()
+                            }
+                          ])
+                        },
+                        [_vm._v(" "), _c("span", [_vm._v("Add a map")])]
+                      )
                     ],
                     1
                   ),
@@ -14098,18 +14149,47 @@
         ),
         _vm._v(" "),
         _c(
-          "v-btn",
+          "v-tooltip",
           {
-            staticClass: "expand-btn",
-            class: { collapsed: _vm.menuCollapsed },
-            attrs: { depressed: "", color: "transparent" },
-            on: {
-              click: function($event) {
-                _vm.menuCollapsed = !_vm.menuCollapsed;
+            attrs: { bottom: "" },
+            scopedSlots: _vm._u([
+              {
+                key: "activator",
+                fn: function(ref) {
+                  var on = ref.on;
+                  return [
+                    _c(
+                      "v-btn",
+                      _vm._g(
+                        {
+                          staticClass: "expand-btn",
+                          class: { collapsed: _vm.menuCollapsed },
+                          attrs: { depressed: "", color: "transparent" },
+                          on: {
+                            click: function($event) {
+                              _vm.menuCollapsed = !_vm.menuCollapsed;
+                            }
+                          }
+                        },
+                        on
+                      ),
+                      [
+                        _c("div", { staticClass: "expand-btn-icon" }, [
+                          _vm._v("▲")
+                        ])
+                      ]
+                    )
+                  ]
+                }
               }
-            }
+            ])
           },
-          [_c("div", { staticClass: "expand-btn-icon" }, [_vm._v("▲")])]
+          [
+            _vm._v(" "),
+            _c("span", [
+              _vm._v(_vm._s(_vm.menuCollapsed ? "expand" : "collapse"))
+            ])
+          ]
         )
       ],
       1
@@ -14138,7 +14218,7 @@
     /* style */
     const __vue_inject_styles__$4 = undefined;
     /* scoped */
-    const __vue_scope_id__$4 = "data-v-35fb2269";
+    const __vue_scope_id__$4 = "data-v-0cc8f617";
     /* module identifier */
     const __vue_module_identifier__$4 = undefined;
     /* functional template */
