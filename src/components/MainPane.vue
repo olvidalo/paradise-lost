@@ -38,9 +38,24 @@
 
 					<div class="menu-controls">
 						<v-btn-toggle v-model="selectedMap" mandatory class="map-toggles">
-							<v-btn v-for="(map, index) in activeMaps" @click="selectMap($event, map)" flat :value="map" class="map-toggle">{{index + 1}}</v-btn>
+
+							<!-- map selector buttons -->
+							<v-tooltip top v-for="(map, index) in activeMaps">
+								<template v-slot:activator="{ on }">
+									<v-btn v-on="on" @click="selectMap($event, map)" flat :value="map" class="map-toggle">{{index + 1}}</v-btn>
+								</template>
+								<span>Configure map {{index + 1}}</span>
+							</v-tooltip>
 						</v-btn-toggle>
-						<v-btn class="map-toggle add" v-on:click="addMap()" v-if="activeMaps.length < 4">+</v-btn>
+
+						<!-- add button -->
+						<v-tooltip top>
+							<template v-slot:activator="{ on }">
+								<v-btn class="map-toggle add" v-on="on" @click="addMap()" v-if="activeMaps.length < 4">+</v-btn>
+							</template>
+							<span>Add a map</span>
+						</v-tooltip>
+
 					</div>
 					<div class="menu-list">
 						<v-list  dense id="menu">
@@ -151,9 +166,14 @@
 
 		</div>
 
-		<v-btn depressed class="expand-btn"color="transparent" @click="menuCollapsed = !menuCollapsed" v-bind:class="{collapsed: menuCollapsed}">
-			<div class="expand-btn-icon">▲</div>
-		</v-btn>
+		<v-tooltip bottom>
+			<template v-slot:activator="{ on }">
+				<v-btn depressed class="expand-btn"color="transparent" v-on="on" @click="menuCollapsed = !menuCollapsed" v-bind:class="{collapsed: menuCollapsed}">
+					<div class="expand-btn-icon">▲</div>
+				</v-btn>
+			</template>
+			<span>{{menuCollapsed ? 'expand' : 'collapse'}}</span>
+		</v-tooltip>
 	</div>
 </template>
 
