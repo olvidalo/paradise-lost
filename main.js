@@ -13218,6 +13218,9 @@
   //
   //
   //
+  //
+  //
+  //
   var script$3 = {name:"AboutDialog",methods:{close(){this.$emit("close");}}};
 
   /* script */
@@ -13322,15 +13325,9 @@
           ]),
           _vm._v(" "),
           _c("div", [
-            _c("h2", { attrs: { id: "credits" } }, [_vm._v("Credits")]),
+            _c("h2", { attrs: { id: "credits" } }, [_vm._v("Cited")]),
             _vm._v(" "),
             _c("ul", { staticClass: "bib" }, [
-              _c("li", [
-                _vm._v("Ng, Morgan. 2013. “Milton’s Maps.” "),
-                _c("em", [_vm._v("Word and Image")]),
-                _vm._v(" 29 (4): 428-42.")
-              ]),
-              _vm._v(" "),
               _c("li", [
                 _vm._v("Milton, John. 2007. "),
                 _c("em", [
@@ -13339,6 +13336,28 @@
                 _vm._v(
                   ", edited by William Kerrigan, John Rumrich, and Stephen M. Fallon. New York: The Modern Library. "
                 )
+              ]),
+              _vm._v(" "),
+              _c("li", [
+                _vm._v("Map of biblical lands. "),
+                _c("em", [_vm._v("King James Bible")]),
+                _vm._v(
+                  ", 1611. Woodcut. 41 cm (folio). Rare Book and Manuscript Library, University of Pennsylvania. Photo:\n                        University of Pennsylvania."
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", [
+                _vm._v("Map of Biblical lands. "),
+                _c("em", [_vm._v("King James Bible")]),
+                _vm._v(
+                  ", 1612/1613 (STC 2225; the edition of Milton’s family Bible). Woodcut. 22cm. Houghton Library, Harvard University. Photo: Harvard University. "
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", [
+                _vm._v("Ng, Morgan. 2013. “Milton’s Maps.” "),
+                _c("em", [_vm._v("Word and Image")]),
+                _vm._v(" 29 (4): 428-42.")
               ]),
               _vm._v(" "),
               _c("li", [
@@ -13383,7 +13402,7 @@
     /* style */
     const __vue_inject_styles__$3 = undefined;
     /* scoped */
-    const __vue_scope_id__$3 = "data-v-238b857e";
+    const __vue_scope_id__$3 = "data-v-000c1df2";
     /* module identifier */
     const __vue_module_identifier__$3 = undefined;
     /* functional template */
@@ -14358,21 +14377,27 @@
                               },
                               [
                                 _c(
-                                  "v-layout",
-                                  { attrs: { "justify-space-between": "" } },
-                                  [
-                                    _c("span", [_vm._v("good")]),
-                                    _vm._v(" "),
-                                    _c("span", [_vm._v("neutral")]),
-                                    _vm._v(" "),
-                                    _c("span", [_vm._v("bad")])
-                                  ]
+                                  "div",
+                                  { staticStyle: { "text-align": "center" } },
+                                  [_vm._v("Moral Valence")]
                                 ),
                                 _vm._v(" "),
                                 _c("div", {
                                   style: _vm.legendStyle,
                                   attrs: { id: "legend" }
-                                })
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "v-layout",
+                                  { attrs: { "justify-space-between": "" } },
+                                  [
+                                    _c("span", [_vm._v("positive")]),
+                                    _vm._v(" "),
+                                    _c("span", [_vm._v("neutral")]),
+                                    _vm._v(" "),
+                                    _c("span", [_vm._v("negative")])
+                                  ]
+                                )
                               ],
                               1
                             )
