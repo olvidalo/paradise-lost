@@ -54,10 +54,13 @@
                 <p>Randa El Khatib (University of Victoria) and Marcel Schaeben (University of Cologne) </p>
             </div>
             <div>
-                <h2 id="credits">Credits</h2>
+                <h2 id="credits">Cited</h2>
                 <ul class="bib">
-                    <li>Ng, Morgan. 2013. “Milton’s Maps.” <em>Word and Image</em> 29 (4): 428-42.</li>
                     <li>Milton, John. 2007. <em>The Complete Poetry and Essential Prose of John Milton</em>, edited by William Kerrigan, John Rumrich, and Stephen M. Fallon. New York: The Modern Library. </li>
+                    <li>Map of biblical lands. <em>King James Bible</em>, 1611. Woodcut. 41 cm (folio). Rare Book and Manuscript Library, University of Pennsylvania. Photo:
+                        University of Pennsylvania.</li>
+                    <li>Map of Biblical lands. <em>King James Bible</em>, 1612/1613 (STC 2225; the edition of Milton’s family Bible). Woodcut. 22cm. Houghton Library, Harvard University. Photo: Harvard University. </li>
+                    <li>Ng, Morgan. 2013. “Milton’s Maps.” <em>Word and Image</em> 29 (4): 428-42.</li>
                     <li>Speed, John. 1626. “In A Prospect of the Most Famous Parts of the World.” Maps & Imagery Library, Special and Area Studies Collections, George A. Smathers Libraries, University of Florida.</li>
                 </ul>
             </div>
