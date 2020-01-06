@@ -1,10 +1,10 @@
 <template>
 	<v-container v-if="$store.getters.selectedPlace">
-		
+
 			<v-layout :fill-height="true" column>
 				<div class="header">
 					<div class="headline">{{selectedPlace["Place"]}}</div>
-					 <p v-html="$options.filters.markdown(selectedPlace['Comments'])" ></p>				  
+					 <p v-html="$options.filters.markdown(selectedPlace['Comments'])" ></p>
 				</div>
 
 				<v-divider></v-divider>
@@ -16,15 +16,17 @@
 
 					  <v-tab :key="0">Passage</v-tab>
 					  <v-tab :key="1">Related Locations</v-tab>
-					  
+
 					  <v-tabs-items v-model="activeTab">
 					  	  <v-tab-item :key="0">
 					  	    <v-card color="transparent" class="elevation-0">
 					  	    	<v-card-text>
 					  	    		<div class="passage" v-for="passage in parsedPassages">
-					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">{{ passage.text }}</div>
+					  	    			<div class="passage-text morality" v-bind:style="{'border-color': colorScheme[passage.morality]}">
+                                            <div class="line" v-for="line in passage.lines">{{ line }}</div>
+                                        </div>
 					  	    			<div class="reference">({{ passage.pos }})</div>
-					  	    		  </div>	
+					  	    		  </div>
 					  	    	</v-card-text>
 					  	    </v-card>
 					  	  </v-tab-item>
@@ -40,7 +42,7 @@
 					  	  	</v-card>
 					  	  </v-tab-item>
 					  </v-tabs-items>
-					  
+
 					</v-tabs>
 				</v-flex>
 
@@ -60,6 +62,7 @@
 import marked from 'marked';
 
 import placeData from '../data-preprocessed/places.csv'
+
 export default {
 	name: "PassagePane",
 	computed: {
@@ -77,10 +80,10 @@ export default {
 
 			while ( (match = regex.exec(this.selectedPlace["Content"])) !== null) {
 				passages.push({
-					text: match[1],
+					lines: match[1].split("\n"),
 					pos: match[2],
 					morality: match[3]
-				})		
+				})
 			}
 
 			return passages
@@ -150,6 +153,11 @@ export default {
 
 .passage {
 	margin-bottom: 1em;
+}
+
+.line {
+    padding-left: 0.5em;
+    text-indent: -0.5em;
 }
 
 .reference {
