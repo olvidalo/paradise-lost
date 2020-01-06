@@ -27,7 +27,7 @@
              </v-layout>
             </v-container>
           </v-content>
-          <v-navigation-drawer app absolute :right="true" v-model="passagePaneOpen" width="410" :disable-resize-watcher="true" :hide-overlay="true" stateless>
+          <v-navigation-drawer app absolute :right="true" v-model="passagePaneOpen" width="420" :disable-resize-watcher="true" :hide-overlay="true" stateless>
            <PassagePane/>
          </v-navigation-drawer>
 
