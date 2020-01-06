@@ -269,7 +269,7 @@ export default {
 }
 
 .teaser {
-	font-family: "Playfair Display", "Lato", sans-serif;
+	font-family: "Lato", "Helvetica", sans-serif;
 	margin-bottom: 1rem;
 }
 
