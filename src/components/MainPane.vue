@@ -70,7 +70,7 @@
 							</v-list-group>
 							<v-list-group no-action>
 								<v-list-tile slot="activator">
-									<v-list-tile-content><v-list-tile-title>Rectified maps</v-list-tile-title></v-list-tile-content>
+									<v-list-tile-content><v-list-tile-title>Historical maps</v-list-tile-title></v-list-tile-content>
 								</v-list-tile>
 
 								<v-list-tile avatar ripple v-bind:class="{ selected: overlayMap && map.id == overlayMap.id }" v-for="map in mapConfig.overlayMaps"  @click="$store.commit('setOverlayMap', map)">
