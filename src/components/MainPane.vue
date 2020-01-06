@@ -61,7 +61,7 @@
 						<v-list  dense id="menu">
 							<v-list-group no-action>
 								<v-list-tile slot="activator">
-									<v-list-tile-content><v-list-tile-title>Base Maps</v-list-tile-title></v-list-tile-content>
+									<v-list-tile-content><v-list-tile-title>Base maps</v-list-tile-title></v-list-tile-content>
 								</v-list-tile>
 								<v-list-tile avatar ripple v-bind:class="{ selected: $store.getters.baseLayer.id == baseLayer.id }" v-for="(baseLayer, index) in mapConfig.baseLayers" @click="$store.commit('setBaseLayer', baseLayer)">
 									<v-list-tile-content><v-list-tile-title>{{ baseLayer.name }}</v-list-tile-title></v-list-tile-content>
@@ -70,7 +70,7 @@
 							</v-list-group>
 							<v-list-group no-action>
 								<v-list-tile slot="activator">
-									<v-list-tile-content><v-list-tile-title>Rectified Maps</v-list-tile-title></v-list-tile-content>
+									<v-list-tile-content><v-list-tile-title>Rectified maps</v-list-tile-title></v-list-tile-content>
 								</v-list-tile>
 
 								<v-list-tile avatar ripple v-bind:class="{ selected: overlayMap && map.id == overlayMap.id }" v-for="map in mapConfig.overlayMaps"  @click="$store.commit('setOverlayMap', map)">
@@ -116,11 +116,11 @@
 
 							<v-list-group>
 								<v-list-tile slot="activator">
-									<v-list-tile-content><v-list-tile-title>Marker Types</v-list-tile-title></v-list-tile-content>
+									<v-list-tile-content><v-list-tile-title>Marker types</v-list-tile-title></v-list-tile-content>
 								</v-list-tile>
 
 								<v-list-tile avatar ripple v-bind:class="{ selected: markerType == 'pie' }" @click="markerType = 'pie'">
-									<v-list-tile-content><v-list-tile-title>Pie Charts</v-list-tile-title></v-list-tile-content>
+									<v-list-tile-content><v-list-tile-title>Pie charts</v-list-tile-title></v-list-tile-content>
 									<v-list-tile-action><md-icon class="check">✓</md-icon></v-list-tile-action>
 								</v-list-tile>
 
@@ -136,7 +136,7 @@
 
 								<v-list-tile avatar ripple>
 									<v-list-tile-content>
-										Color Scheme
+										Color scheme
 									</v-list-tile-content>
 									<v-list-tile-action>
 										<v-btn-toggle class="scheme-toggle" v-model="colorSchemeIndex" mandatory>

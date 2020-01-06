@@ -15,7 +15,7 @@
              <v-layout justify-end align-end>
               <v-flex shrink class="controls">
                <v-card id="legend-pane" style="" flat class="transparent">
-                    <div style="text-align: center;">Moral Valence</div>
+                    <div style="text-align: center; font-weight: bolder">Moral valence</div>
                    <div id="legend" :style="legendStyle"></div>
                    <v-layout justify-space-between>
                        <span>positive</span>
