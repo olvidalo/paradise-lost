@@ -26,13 +26,13 @@
               </v-flex>
              </v-layout>
             </v-container>
-          </v-content> 
-          <v-navigation-drawer app absolute :right="true" v-model="passagePaneOpen" width="400" :disable-resize-watcher="true" :hide-overlay="true" stateless>
+          </v-content>
+          <v-navigation-drawer app absolute :right="true" v-model="passagePaneOpen" width="410" :disable-resize-watcher="true" :hide-overlay="true" stateless>
            <PassagePane/>
          </v-navigation-drawer>
-    
-   
-    
+
+
+
     </v-app>
   </div>
 </template>
