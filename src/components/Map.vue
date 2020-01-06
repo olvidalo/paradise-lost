@@ -65,7 +65,7 @@ export default {
       handler(newMapCenterInfo) {
         console.log(newMapCenterInfo.source + " " + this.n)
         if (newMapCenterInfo.source != this.n) {
-         
+
           this.map.flyTo(newMapCenterInfo.center)
 
         }
@@ -77,13 +77,13 @@ export default {
           this.map.on('movestart', this.moveStartHandler)
           this.map.on('moveend', this.moveEndHandler)
           this.map.on('move', this.moveHandler)
-        } 
+        }
         if (newMapN != this.n) {
           console.log("off")
           this.map.off('movestart', this.moveStartHandler)
           this.map.off('moveend', this.moveEndHandler)
           this.map.off('move', this.moveHandler)
-        } 
+        }
       }
     },
     baseLayer: {
@@ -262,7 +262,7 @@ export default {
     })
 
     this.makeSVGCircle = (radius, strokeWidth, opacity, fillColor) => `
-      <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${opacity}" fill="${fillColor}" />
+      <circle cx="${radius}" cy="${radius}" r="${radius - strokeWidth}" stroke="#0d0d0d" stroke-width="${strokeWidth}" style="opacity: ${opacity}" fill="${fillColor}" />
     `
 
    this.toggleParadiseLostMarkers = (show) => {
@@ -309,7 +309,7 @@ export default {
                 const weight = good + bad + neutral
 
 
-                const w = scaleForWeight(27, weight)
+                const w = scaleForWeight(15, weight)
                 const h = w
 
                 const piedata = [good, bad, neutral]
@@ -341,7 +341,7 @@ export default {
                               .append('path')
                               .attr('d', theArc)
                               .attr('fill', (d, i) => color(i))
-                        .attr('stroke', () => 'gray')
+                        .attr('stroke', () => '#2e2e2e')
                         .attr('stroke-width', (d, i) => {
                           console.log(d)
                           return isNaN(d.data) || d.data == 0 ? 0 : border
@@ -361,7 +361,7 @@ export default {
                 }
 
                 //
-                
+
                 return L.marker(latLng, {...markerOptions, icon: L.divIcon(iconOptions)})
               },
               "pin": function() {
@@ -374,7 +374,7 @@ export default {
 
 
 
-                const w = scaleForWeight(40, weight)
+                const w = scaleForWeight(20, weight)
                 const h = w
 
                 const piedata = [good / weight, bad / weight, neutral / weight]
@@ -400,7 +400,7 @@ export default {
                     <path class="pin" style="fill: ${colorScheme['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     <path class="pin" style="fill: ${colorScheme['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     <path class="pin" style="fill: ${colorScheme['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                    
+
                   </svg></div>`
                 }
 
@@ -434,7 +434,7 @@ export default {
             }
 
 
-          
+
 
             markerGenerators[this.markerType]()
               .bindTooltip(place["Place"])
@@ -462,7 +462,7 @@ export default {
         this.map.removeLayer(this.genesisMarkers)
         this.genesisMarkers = null
       } else if (show == true) {
-        
+
 
         this.genesisMarkers = L.featureGroup()
 
@@ -496,7 +496,7 @@ export default {
         this.map.removeLayer(this.bibleMarkers)
         this.bibleMarkers = null
       } else if (show == true) {
-        
+
 
         this.bibleMarkers = L.featureGroup()
 
@@ -593,7 +593,7 @@ export default {
      width: 100%;
     height: 100%;
 
-    
+
   }
 
   [id^=overlay] {
@@ -632,7 +632,7 @@ export default {
 
   .pin {
     stroke-width: 2px;
-    stroke: darkgray;
+    stroke: #2e2e2e;
   }
 
   .vector-marker svg {
