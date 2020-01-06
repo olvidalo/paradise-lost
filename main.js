@@ -12593,20 +12593,20 @@
           </svg>
         </div>
       `,...options});this.makeSVGCircle=(radius,strokeWidth,opacity,fillColor)=>`
-      <circle cx="${radius}" cy="${radius}" r="${radius-strokeWidth}" stroke="black" stroke-width="${strokeWidth}" style="opacity: ${opacity}" fill="${fillColor}" />
-    `;this.toggleParadiseLostMarkers=show=>{if(show==false&&this.paradiseLostMarkers){this.map.removeLayer(this.paradiseLostMarkers);this.paradiseLostMarkers=null;}else if(show==true){this.paradiseLostMarkers=leafletSrc.featureGroup();const addPlaceMarkers=data=>{data.forEach(place=>{const m={};m[place["Postive"]]="good";m[place["Negative"]]="bad";m[place["Neutral"]]="neutral";const max=Object.keys(m).reduce((max,key)=>{return `${Math.max(max,key)}`;},0);const colorScheme=this.colorScheme;const scaleForWeight=(size,weight)=>size+parseInt(weight)*3;const markerOptions={opacity:0.8,weight:parseInt(place["Weight"]),title:place["Place"],place:place};const latLng=[place["Latitude"],place["Longitude"]];const makeSVGIconOptions=this.makeSVGIconOptions;const makeSVGCircle=this.makeSVGCircle;const markerGenerators={"pie":function(){const good=parseInt(place["Postive"]);const bad=parseInt(place["Negative"]);const neutral=parseInt(place["Neutral"]);const weight=good+bad+neutral;const w=scaleForWeight(27,weight);const h=w;const piedata=[good,bad,neutral];const border=2;const color=ordinal().range([colorScheme["good"],colorScheme["bad"],colorScheme["neutral"]]);const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');const svg2=select(svg).attr('width',w+border).attr('height',h+border).append('g').attr('transform',`translate(${(w+border)/2},${(h+border)/2} )`);const theArc=arc().innerRadius(w/2).outerRadius(0);const thePie=pie().value(d=>{console.log(d);return d;}).sort(null);const path=svg2.selectAll('path').data(thePie(piedata)).enter().append('path').attr('d',theArc).attr('fill',(d,i)=>color(i)).attr('stroke',()=>'gray').attr('stroke-width',(d,i)=>{console.log(d);return isNaN(d.data)||d.data==0?0:border;});const iconOptions={iconSize:[w+border,h+border],className:'vector-marker',extraIconClasses:'pie-marker-icon',extraDivClasses:'pie-marker',html:`
+      <circle cx="${radius}" cy="${radius}" r="${radius-strokeWidth}" stroke="#0d0d0d" stroke-width="${strokeWidth}" style="opacity: ${opacity}" fill="${fillColor}" />
+    `;this.toggleParadiseLostMarkers=show=>{if(show==false&&this.paradiseLostMarkers){this.map.removeLayer(this.paradiseLostMarkers);this.paradiseLostMarkers=null;}else if(show==true){this.paradiseLostMarkers=leafletSrc.featureGroup();const addPlaceMarkers=data=>{data.forEach(place=>{const m={};m[place["Postive"]]="good";m[place["Negative"]]="bad";m[place["Neutral"]]="neutral";const max=Object.keys(m).reduce((max,key)=>{return `${Math.max(max,key)}`;},0);const colorScheme=this.colorScheme;const scaleForWeight=(size,weight)=>size+parseInt(weight)*3;const markerOptions={opacity:0.8,weight:parseInt(place["Weight"]),title:place["Place"],place:place};const latLng=[place["Latitude"],place["Longitude"]];const makeSVGIconOptions=this.makeSVGIconOptions;const makeSVGCircle=this.makeSVGCircle;const markerGenerators={"pie":function(){const good=parseInt(place["Postive"]);const bad=parseInt(place["Negative"]);const neutral=parseInt(place["Neutral"]);const weight=good+bad+neutral;const w=scaleForWeight(15,weight);const h=w;const piedata=[good,bad,neutral];const border=2;const color=ordinal().range([colorScheme["good"],colorScheme["bad"],colorScheme["neutral"]]);const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');const svg2=select(svg).attr('width',w+border).attr('height',h+border).append('g').attr('transform',`translate(${(w+border)/2},${(h+border)/2} )`);const theArc=arc().innerRadius(w/2).outerRadius(0);const thePie=pie().value(d=>{console.log(d);return d;}).sort(null);const path=svg2.selectAll('path').data(thePie(piedata)).enter().append('path').attr('d',theArc).attr('fill',(d,i)=>color(i)).attr('stroke',()=>'#2e2e2e').attr('stroke-width',(d,i)=>{console.log(d);return isNaN(d.data)||d.data==0?0:border;});const iconOptions={iconSize:[w+border,h+border],className:'vector-marker',extraIconClasses:'pie-marker-icon',extraDivClasses:'pie-marker',html:`
                   <div style="position: relative;">
                     <div style="position: absolute; width: ${w+border}px; height: ${h+border}px; top: 0; left: 0;">
                         ${new window.XMLSerializer().serializeToString(svg)}
                     </div>
                   </div>`};//
-  return leafletSrc.marker(latLng,{...markerOptions,icon:leafletSrc.divIcon(iconOptions)});},"pin":function(){const good=parseInt(place["Postive"]);const bad=parseInt(place["Negative"]);const neutral=parseInt(place["Neutral"]);const weight=good+bad+neutral;const w=scaleForWeight(40,weight);const h=w;const piedata=[good/weight,bad/weight,neutral/weight];const iconOptions={iconSize:[w,h],iconAnchor:[15,50],popupAnchor:[2,-40],shadowAnchor:[39,45],shadowSize:[w+4,h+4],className:'vector-marker',prefix:'fa',spinClass:'fa-spin',extraIconClasses:'',extraDivClasses:'',icon:'home',markerColor:'blue',iconColor:'white',viewBox:`0 0 ${w} ${h}`,html:`
+  return leafletSrc.marker(latLng,{...markerOptions,icon:leafletSrc.divIcon(iconOptions)});},"pin":function(){const good=parseInt(place["Postive"]);const bad=parseInt(place["Negative"]);const neutral=parseInt(place["Neutral"]);const weight=good+bad+neutral;const w=scaleForWeight(20,weight);const h=w;const piedata=[good/weight,bad/weight,neutral/weight];const iconOptions={iconSize:[w,h],iconAnchor:[15,50],popupAnchor:[2,-40],shadowAnchor:[39,45],shadowSize:[w+4,h+4],className:'vector-marker',prefix:'fa',spinClass:'fa-spin',extraIconClasses:'',extraDivClasses:'',icon:'home',markerColor:'blue',iconColor:'white',viewBox:`0 0 ${w} ${h}`,html:`
                   <div style="position: relative;"><svg width="${w}px" height="${h}px" viewbox="0 0 50 50">
                   <path class="pin" style="fill: white;}; opacity: 1;" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     <path class="pin" style="fill: ${colorScheme['good']}; opacity: ${piedata[0]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     <path class="pin" style="fill: ${colorScheme['bad']}; opacity: ${piedata[1]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
                     <path class="pin" style="fill: ${colorScheme['neutral']}; opacity: ${piedata[2]};" d="M16,1c-8.285,0,-15,6.656,-15,14.865c0,8.211,15,35.135,15,35.135c0,0,15,-26.924,15,-35.135c0,-8.209,-6.718,-14.865,-15,-14.865l0,0z" />
-                    
+
                   </svg></div>`};return leafletSrc.marker(latLng,{...markerOptions,icon:leafletSrc.divIcon(iconOptions)});},"circle":function(){const good=parseInt(place["Postive"]);const bad=parseInt(place["Negative"]);const neutral=parseInt(place["Neutral"]);const weight=good+bad+neutral;const radiusBase=scaleForWeight(40,weight);const radius=isNaN(radiusBase)?0:radiusBase/4;const piedata=[good/weight,bad/weight,neutral/weight];const strokeWidth=2;const iconSVGContent=`
                   ${makeSVGCircle(radius,strokeWidth,piedata[0],colorScheme['good'])}
                   ${makeSVGCircle(radius,strokeWidth,piedata[1],colorScheme['bad'])}
@@ -12698,7 +12698,7 @@
   //
   var script$2 = {name:"PassagePane",computed:{selectedPlace(){return this.$store.getters.selectedPlace;},activeTab:{get(){return this.$store.getters.activeDetailTab==="tab-passages"?0:1;},set(value){this.$store.commit('setActiveDetailTab',value==0?"tab-passages":"tab-related");}},parsedPassages(){// https://blog.mastykarz.nl/regular-expressions-in-javascript-dont-support-the-single-line-mode/
   // https://regex101.com/r/zACvGs/1
-  const regex=new RegExp("\\\"([\\s\\S]*?)\\\"\\s+\\((.*?)\\)\\s+\\[(.*?)\\];?","g");let match=null;const passages=[];while((match=regex.exec(this.selectedPlace["Content"]))!==null){passages.push({text:match[1],pos:match[2],morality:match[3]});}return passages;},relatedPlaces(){return placeData.filter(place=>place["Related"]===this.selectedPlace["Related"]&&place["Place"]!==this.selectedPlace["Place"]);},colorScheme(){const scheme=this.$store.getters.colorScheme;return {positive:scheme["good"],negative:scheme["bad"],neutral:scheme["neutral"]};}},filters:{markdown:value=>marked(value)}};
+  const regex=new RegExp("\\\"([\\s\\S]*?)\\\"\\s+\\((.*?)\\)\\s+\\[(.*?)\\];?","g");let match=null;const passages=[];while((match=regex.exec(this.selectedPlace["Content"]))!==null){passages.push({lines:match[1].split("\n"),pos:match[2],morality:match[3]});}return passages;},relatedPlaces(){return placeData.filter(place=>place["Related"]===this.selectedPlace["Related"]&&place["Place"]!==this.selectedPlace["Place"]);},colorScheme(){const scheme=this.$store.getters.colorScheme;return {positive:scheme["good"],negative:scheme["bad"],neutral:scheme["neutral"]};}},filters:{markdown:value=>marked(value)}};
 
   /* script */
   const __vue_script__$2 = script$2;
@@ -12798,7 +12798,16 @@
                                                     ]
                                                 }
                                               },
-                                              [_vm._v(_vm._s(passage.text))]
+                                              _vm._l(passage.lines, function(
+                                                line
+                                              ) {
+                                                return _c(
+                                                  "div",
+                                                  { staticClass: "line" },
+                                                  [_vm._v(_vm._s(line))]
+                                                )
+                                              }),
+                                              0
                                             ),
                                             _vm._v(" "),
                                             _c(
@@ -12920,7 +12929,7 @@
     /* style */
     const __vue_inject_styles__$2 = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = "data-v-4aeea23b";
+    const __vue_scope_id__$2 = "data-v-1f3d30bd";
     /* module identifier */
     const __vue_module_identifier__$2 = undefined;
     /* functional template */
@@ -13647,7 +13656,7 @@
                                     "v-list-tile-content",
                                     [
                                       _c("v-list-tile-title", [
-                                        _vm._v("Base Maps")
+                                        _vm._v("Base maps")
                                       ])
                                     ],
                                     1
@@ -13721,7 +13730,7 @@
                                     "v-list-tile-content",
                                     [
                                       _c("v-list-tile-title", [
-                                        _vm._v("Rectified Maps")
+                                        _vm._v("Historical maps")
                                       ])
                                     ],
                                     1
@@ -13854,9 +13863,7 @@
                                 [
                                   _c(
                                     "v-list-tile-content",
-                                    [
-                                      _c("v-list-tile-title", [_vm._v("Markers")])
-                                    ],
+                                    [_c("v-list-tile-title", [_vm._v("Layers")])],
                                     1
                                   )
                                 ],
@@ -13974,7 +13981,7 @@
                                     "v-list-tile-content",
                                     [
                                       _c("v-list-tile-title", [
-                                        _vm._v("Marker Types")
+                                        _vm._v("Marker types")
                                       ])
                                     ],
                                     1
@@ -13999,7 +14006,7 @@
                                     "v-list-tile-content",
                                     [
                                       _c("v-list-tile-title", [
-                                        _vm._v("Pie Charts")
+                                        _vm._v("Pie charts")
                                       ])
                                     ],
                                     1
@@ -14088,7 +14095,7 @@
                                 [
                                   _c("v-list-tile-content", [
                                     _vm._v(
-                                      "\n\t\t\t\t\t\t\t\t\tColor Scheme\n\t\t\t\t\t\t\t\t"
+                                      "\n\t\t\t\t\t\t\t\t\tColor scheme\n\t\t\t\t\t\t\t\t"
                                     )
                                   ]),
                                   _vm._v(" "),
@@ -14237,7 +14244,7 @@
     /* style */
     const __vue_inject_styles__$4 = undefined;
     /* scoped */
-    const __vue_scope_id__$4 = "data-v-0cc8f617";
+    const __vue_scope_id__$4 = "data-v-cc2bbfb0";
     /* module identifier */
     const __vue_module_identifier__$4 = undefined;
     /* functional template */
@@ -14384,7 +14391,7 @@
                                       "font-weight": "bolder"
                                     }
                                   },
-                                  [_vm._v("Moral Valence")]
+                                  [_vm._v("Moral valence")]
                                 ),
                                 _vm._v(" "),
                                 _c("div", {
@@ -14426,7 +14433,7 @@
                   app: "",
                   absolute: "",
                   right: true,
-                  width: "400",
+                  width: "420",
                   "disable-resize-watcher": true,
                   "hide-overlay": true,
                   stateless: ""
