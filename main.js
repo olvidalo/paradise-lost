@@ -14378,7 +14378,12 @@
                               [
                                 _c(
                                   "div",
-                                  { staticStyle: { "text-align": "center" } },
+                                  {
+                                    staticStyle: {
+                                      "text-align": "center",
+                                      "font-weight": "bolder"
+                                    }
+                                  },
                                   [_vm._v("Moral Valence")]
                                 ),
                                 _vm._v(" "),
