@@ -16,7 +16,7 @@
   "dependencies": {
     "Leaflet.vector-markers": "github:ajf2/Leaflet.vector-markers#90ef9b81a87611fc1ef20eac8c4f5581287a4d7f",
     "animate.css": "^3.7.2",
-    "d3": "^4.13.0",
+    "d3": "^7.6.1",
     "leaflet": "^1.5.1",
     "leaflet-providers": "^1.9.0",
     "leaflet.markercluster": "^1.4.1",
